@@ -8,8 +8,9 @@ def web():
         <html>
             <body>
                 <h1>web-сервер на flask</h1>
-                <a href="/author">author</a>
-                <a href="/lab1/oak">oak</a>
+                <a href="/author">author</a><br>
+                <a href="/lab1/oak">oak</a><br>
+                <a href="/lab1/counter">counter</a><br>
             </body>
         </html>"""
 
@@ -42,3 +43,20 @@ def oak():
     </body>
 </html>
 """
+
+
+count = 0
+
+@app.route("/lab1/counter")
+def counter():
+    global count
+    count += 1
+    return '''
+<!doctype html>
+<html>
+    <body>
+        Сколько раз вы сюда заходили: ''' + str(count) + ''' <br>
+        <a href="/web">web</a>
+    </body>
+</html>
+'''
