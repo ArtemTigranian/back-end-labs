@@ -1,0 +1,74 @@
+body {
+    background-color: rgb(114, 155, 121);
+    color: rgb(46, 44, 47);
+    font-family: Arial;
+    margin: 0px 0px 67px;
+}
+
+header{
+    background-color: rgb(186, 205, 176);
+    color: rgb(46, 44, 47);
+    padding: 10px;
+    font-size: 16pt;
+}
+
+footer{
+    background-color: rgb(186, 205, 176);
+    color: rgb(46, 44, 47);
+    padding: 10px;
+    font-size: 16pt;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+main {
+    color: rgb(46, 44, 47);
+    font-size:18pt;
+    padding: 10px;
+}
+
+a {
+    text-decoration: none;
+    transition: 1s;
+    background-color: white;
+    border-radius: 10px;
+    padding: 2px;
+}
+
+a:link{
+    color: rgb(46, 44, 47);
+}
+
+a:visited{
+    color: rgb(0, 0, 0);
+    text-decoration: underline;
+}
+
+a:hover {
+    /* color: white; */
+    font-size: 20pt;
+    transition: 0.4s;
+}
+
+a:active {
+    color: black;
+    opacity: 0.3;
+}
+
+div.menu{
+    border: 7px solid;
+    border-radius: 5px;
+    width: 25%;
+    margin: 0 auto;
+}
+
+div.menu:hover{
+    background-color: #ffffff30;
+    box-shadow: 0 0 15px;
+}
+
+h1.menu{
+    text-align: center;
+}
