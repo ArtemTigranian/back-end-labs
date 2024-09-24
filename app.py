@@ -1,4 +1,7 @@
-from flask import Flask, url_for, redirect, make_response
+from flask import Flask, url_for, redirect, make_response, render_template
+
+# ЛАБОРАТОРНАЯ РАБОТА 1
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -442,6 +445,9 @@ def custom_route():
 
     return response
 
+
+# ЛАБОРАТОРНАЯ РАБОТА 2
+
 @app.route('/lab2/a')
 def a():
     return 'без слэша'
@@ -472,3 +478,7 @@ def add_flower(name):
         <p>Полный список цветов: {(flower_list)} </p>
     </body>
 </html>'''
+
+@app.route('/lab2/example')
+def example():
+    return render_template('example.html')
