@@ -1,4 +1,4 @@
-from flask import Flask, url_for, redirect
+from flask import Flask, url_for, redirect, make_response
 app = Flask(__name__)
 
 @app.route("/")
@@ -111,25 +111,79 @@ def created():
 
 @app.errorhandler(404)
 def not_found(err):
-    return "нет такой страницы", 404
-
-@app.route("/lab1")
-def lab1():
+    css_path = url_for("static", filename="lab1.css")
+    img_path = url_for("static", filename="trollface.jpg")
     return """
 <!doctype html>
 <html>
     <head>
+        <title>Ошибка 404 - Страница не найдена</title>
+        <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
+        <style>
+            h1{
+                text-align: center;
+            }
+            p{
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>ОШИБКА 404</h1>
+            <p>НЕТ ТАКОЙ СТРАНИЦЫ</p>
+            <img src='""" + img_path + """'>
+            <p>Попробуйте вернуться <a href="/">на главную страницу</a>.</p>
+        </main>    
+    </body>
+</html>""", 404
+
+@app.route("/lab1")
+def lab1():
+    css_path = url_for("static", filename="lab1.css")
+    return """
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
         <title>Лабораторная 1</title>
     </head>
     <body>
-        <p>
-            Flask — фреймворк для создания веб-приложений на языке программирования Python, использующий набор инструментов Werkzeug, а также шаблонизатор Jinja2. 
-            Относится к категории так называемых микрофреймворков — минималистичных каркасов веб-приложений, сознательно предоставляющих лишь самые базовые возможности.
-        </p>
-        <a href="/">На главную</a>
+        <header>
+        </header>
+        <main>
+            <p>
+                Flask — фреймворк для создания веб-приложений на языке программирования Python, использующий набор инструментов Werkzeug, а также шаблонизатор Jinja2. 
+                Относится к категории так называемых микрофреймворков — минималистичных каркасов веб-приложений, сознательно предоставляющих лишь самые базовые возможности.
+            </p>
+            <a href="/">На главную</a>
+            <h2>Список роутов</h2>
+            <div class="menu">
+                <ol>
+                    <li><a href="/lab1/web">WEB</a></li>
+                    <li><a href="/lab1/author">AUTHOR</a></li>
+                    <li><a href="/lab1/oak">OAK</a></li>
+                    <li><a href="/lab1/counter">COUNTER</a></li>
+                    <li><a href="/lab1/reset_counter">RESET_COUNTER</a></li>
+                    <li><a href="/lab1/info">INFO</a></li>
+                    <li><a href="/lab1/created">CREATED</a></li>
+                    <li><a href="/lab1/400">400</a></li>
+                    <li><a href="/lab1/401">401</a></li>
+                    <li><a href="/lab1/402">402</a></li>
+                    <li><a href="/lab1/403">403</a></li>
+                    <li><a href="/lab1/405">405</a></li>
+                    <li><a href="/lab1/418">418</a></li>
+                    <li><a href="/lab1/error">error</a></li>
+                    <li><a href="/lab1/custom_route">custom_route</a></li>
+                </ol>
+            </div>
+        <main>    
+        <footer>
+        </footer>
     </body>
 </html>
     """
+
 
 @app.route("/lab1/400")
 def error_400():
@@ -212,7 +266,7 @@ def error_418():
 @app.route("/lab1/error")
 def trigger_error():
     error = 1 / 0
-    return "Вы никогда не увидите этот текст, так как произойдет ошибка."
+    return
 
 @app.errorhandler(500)
 def internal_server_error(e):
@@ -221,9 +275,41 @@ def internal_server_error(e):
 <html>
     <body>
         <h1>Ошибка 500: Внутренняя ошибка сервера</h1>
-        <p>Произошла ошибка на сервере. Пожалуйста, попробуйте позже или обратитесь к администратору.</p>
         <a href="/lab1">Вернуться на страницу лабораторной 1</a>
     </body>
 </html>
     ''', 500
 
+
+@app.route("/lab1/custom_route")
+def custom_route():
+    # Подготовка HTML содержимого
+    img_path = url_for("static", filename="oak.jpg")
+    content = """
+<!doctype html>
+<html>
+    <head>
+        <title>Текст с картинкой</title>
+    </head>
+    <body>
+        <h1>Добро пожаловать на страницу с текстом и изображением</h1>
+        <p>Это первый абзац текста. Здесь может быть ваше описание или история. Flask — это мощный фреймворк для создания веб-приложений.</p>
+        <p>Во втором абзаце рассказывается о возможностях Flask, таких как маршрутизация, обработка шаблонов и управление данными с помощью различных библиотек.</p>
+        <p>Третий абзац посвящен тому, как легко интегрировать CSS и JavaScript в страницы Flask для улучшения пользовательского интерфейса.</p>
+        <p>Здесь можно размещать изображения и другие мультимедиа:</p>
+        <img src='""" + img_path + """' alt="Пример изображения" style="width:400px;height:auto;">
+    </body>
+</html>
+    """
+    
+    # Создание ответа с содержимым
+    response = make_response(content)
+
+    # Добавление заголовка Content-Language
+    response.headers["Content-Language"] = "ru"  # Указываем, что страница на русском языке
+
+    # Добавление двух нестандартных заголовков
+    response.headers["X-Custom-Header"] = "StudentProject"
+    response.headers["X-Page-Info"] = "CustomRouteWithImage"
+
+    return response
