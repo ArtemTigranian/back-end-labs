@@ -12,7 +12,10 @@ def web():
                 <a href="/lab1/oak">oak</a><br>
                 <a href="/lab1/counter">counter</a><br>
             </body>
-        </html>"""
+        </html>""", 200, {
+            'X-Server': 'sample',
+            'Content-Type':'text/plain; charset=utf-8'
+        }
 
 @app.route("/author")
 def author():
@@ -76,8 +79,6 @@ def created():
     </body>
 </html>
 ''', 201
-
-app = Flask(__name__)
 
 @app.errorhandler(404)
 def not_found(err):
