@@ -4,18 +4,27 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/lab1/web")
 def web():
+    css_path = url_for("static", filename="lab1.css")
     return """<!doctype html>
         <html>
+            <head>
+                <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
+            </head>
             <body>
-                <h1>web-сервер на flask</h1>
-                <a href="/author">author</a><br>
-                <a href="/lab1/oak">oak</a><br>
-                <a href="/lab1/counter">counter</a><br>
+                <header>
+                    НГТУ, ФБ, Лабораторная 1
+                </header>
+                <main>
+                    <h1>web-сервер на flask</h1>
+                    <a href="/lab1/author">author</a><br>
+                    <a href="/lab1/oak">oak</a><br>
+                    <a href="/lab1/counter">counter</a><br>
+                </main>
+                <footer>
+                    &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
+                </footer>
             </body>
-        </html>""", 200, {
-            'X-Server': 'sample',
-            'Content-Type':'text/plain; charset=utf-8'
-        }
+        </html>""", 200
 
 @app.route("/lab1/author")
 def author():
@@ -29,7 +38,7 @@ def author():
                 <p>Студент: """ + name + """</p>
                 <p>Группа: """ + group + """</p>
                 <p>Факультет: """ + faculty + """</p>
-                <a href="/web">web</a>
+                <a href="/lab1/web">web</a>
             </body>
         </html>"""
 
@@ -46,7 +55,7 @@ def oak():
     <body>
         <h1>Дуб</h1>
         <img src='""" + img_path + """'>
-        <a href="/web">web</a>
+        <a href="/lab1/web">web</a>
     </body>
 </html>
 """
@@ -64,7 +73,7 @@ def counter():
     <body>
         Сколько раз вы сюда заходили: ''' + str(count) + ''' <br>
         <a href="/lab1/reset_counter">Очистить счётчик</a><br>
-        <a href="/web">web</a>
+        <a href="/lab1/web">web</a>
     </body>
 </html>
 '''
@@ -79,7 +88,7 @@ def reset_counter():
     <body>
         Счётчик обнулён!<br>
         <a href="/lab1/counter">Вернуться к счётчику</a><br>
-        <a href="/web">web</a>
+        <a href="/lab1/web">web</a>
     </body>
 </html>
 '''
