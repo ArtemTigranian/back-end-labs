@@ -32,6 +32,9 @@ main {
 a {
     text-decoration: none;
     transition: 1s;
+    background-color: white;
+    border-radius: 10px;
+    padding: 2px;
 }
 
 a:link{
@@ -39,12 +42,12 @@ a:link{
 }
 
 a:visited{
-    color: black;
+    color: rgb(0, 0, 0);
     text-decoration: underline;
 }
 
 a:hover {
-    color: white;
+    /* color: white; */
     font-size: 20pt;
     transition: 0.4s;
 }

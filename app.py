@@ -16,9 +16,7 @@ def web():
                 </header>
                 <main>
                     <h1>web-сервер на flask</h1>
-                    <a href="/lab1/author">author</a><br>
-                    <a href="/lab1/oak">oak</a><br>
-                    <a href="/lab1/counter">counter</a><br>
+                    <a href="/lab1">Меню</a>
                 </main>
                 <footer>
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
@@ -97,17 +95,87 @@ def reset_counter():
 def info():
     return redirect("/lab1/author")
 
+resource_created = False
+
 @app.route("/lab1/created")
-def created():
-    return '''
+def create_resource():
+    global resource_created
+    if not resource_created:
+        resource_created = True
+        return '''
 <!doctype html>
 <html>
     <body>
-        <h1>Создано успешно</h1>
-        <div><i>что-то создано...</i></div>
+        <h1>Успешно: ресурс создан</h1>
+        <p>Ваш ресурс был успешно создан.</p>
+        <a href="/lab1/resource">Вернуться к статусу ресурса</a>
     </body>
 </html>
 ''', 201
+    else:
+        return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Отказано: ресурс уже создан</h1>
+        <p>Вы не можете создать ресурс, так как он уже существует.</p>
+        <a href="/lab1/resource">Вернуться к статусу ресурса</a>
+    </body>
+</html>
+''', 400
+
+# Маршрут для удаления ресурса
+@app.route("/lab1/delete")
+def delete_resource():
+    global resource_created
+    if resource_created:
+        resource_created = False
+        return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Успешно: ресурс удалён</h1>
+        <p>Ваш ресурс был успешно удалён.</p>
+        <a href="/lab1/resource">Вернуться к статусу ресурса</a>
+    </body>
+</html>
+''', 200
+    else:
+        return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Отказано: ресурс отсутствует</h1>
+        <p>Вы не можете удалить ресурс, так как он ещё не был создан или уже был удалён.</p>
+        <a href="/lab1/resource">Вернуться к статусу ресурса</a>
+    </body>
+</html>
+''', 400
+
+# Родительская страница, показывающая статус ресурса
+@app.route("/lab1/resource")
+def resource_status():
+    global resource_created
+    status = "Ресурс создан" if resource_created else "Ресурс ещё не создан"
+    create_link = url_for('create_resource')
+    delete_link = url_for('delete_resource')
+    
+    return f'''
+<!doctype html>
+<html>
+    <head>
+        <title>Статус ресурса</title>
+    </head>
+    <body>
+        <h1>Статус ресурса</h1>
+        <p>{status}</p>
+        <a href="{create_link}">Создать ресурс</a><br>
+        <a href="{delete_link}">Удалить ресурс</a>
+    </body>
+</html>
+    '''
+
+
 
 @app.errorhandler(404)
 def not_found(err):
@@ -166,7 +234,7 @@ def lab1():
                     <li><a href="/lab1/counter">COUNTER</a></li>
                     <li><a href="/lab1/reset_counter">RESET_COUNTER</a></li>
                     <li><a href="/lab1/info">INFO</a></li>
-                    <li><a href="/lab1/created">CREATED</a></li>
+                    <li><a href="/lab1/resource">RESOURCE</a></li>
                     <li><a href="/lab1/400">400</a></li>
                     <li><a href="/lab1/401">401</a></li>
                     <li><a href="/lab1/402">402</a></li>
