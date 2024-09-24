@@ -208,3 +208,22 @@ def error_418():
     </body>
 </html>
     ''', 418
+
+@app.route("/lab1/error")
+def trigger_error():
+    error = 1 / 0
+    return "Вы никогда не увидите этот текст, так как произойдет ошибка."
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Ошибка 500: Внутренняя ошибка сервера</h1>
+        <p>Произошла ошибка на сервере. Пожалуйста, попробуйте позже или обратитесь к администратору.</p>
+        <a href="/lab1">Вернуться на страницу лабораторной 1</a>
+    </body>
+</html>
+    ''', 500
+
