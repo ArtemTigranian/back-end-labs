@@ -26,12 +26,16 @@ def web():
 
 @app.route("/lab1/author")
 def author():
+    css_path = url_for("static", filename="lab1.css")
     name = "Тигранян Артём Паруйрович"
     group = "ФБИ-21"
     faculty = "ФБ"
 
     return """<!doctype html>
         <html>
+            <head>
+                <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
+            </head>
             <body>
                 <p>Студент: """ + name + """</p>
                 <p>Группа: """ + group + """</p>
@@ -63,11 +67,15 @@ count = 0
 
 @app.route("/lab1/counter")
 def counter():
+    css_path = url_for("static", filename="lab1.css")
     global count
     count += 1
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         Сколько раз вы сюда заходили: ''' + str(count) + ''' <br>
         <a href="/lab1/reset_counter">Очистить счётчик</a><br>
@@ -78,11 +86,15 @@ def counter():
 
 @app.route("/lab1/reset_counter")
 def reset_counter():
+    css_path = url_for("static", filename="lab1.css")
     global count
     count = 0
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         Счётчик обнулён!<br>
         <a href="/lab1/counter">Вернуться к счётчику</a><br>
@@ -99,12 +111,16 @@ resource_created = False
 
 @app.route("/lab1/created")
 def create_resource():
+    css_path = url_for("static", filename="lab1.css")
     global resource_created
     if not resource_created:
         resource_created = True
         return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>Успешно: ресурс создан</h1>
         <p>Ваш ресурс был успешно создан.</p>
@@ -116,6 +132,9 @@ def create_resource():
         return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>Отказано: ресурс уже создан</h1>
         <p>Вы не можете создать ресурс, так как он уже существует.</p>
@@ -124,15 +143,18 @@ def create_resource():
 </html>
 ''', 400
 
-# Маршрут для удаления ресурса
 @app.route("/lab1/delete")
 def delete_resource():
+    css_path = url_for("static", filename="lab1.css")
     global resource_created
     if resource_created:
         resource_created = False
         return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>Успешно: ресурс удалён</h1>
         <p>Ваш ресурс был успешно удалён.</p>
@@ -144,6 +166,9 @@ def delete_resource():
         return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>Отказано: ресурс отсутствует</h1>
         <p>Вы не можете удалить ресурс, так как он ещё не был создан или уже был удалён.</p>
@@ -155,6 +180,7 @@ def delete_resource():
 # Родительская страница, показывающая статус ресурса
 @app.route("/lab1/resource")
 def resource_status():
+    css_path = url_for("static", filename="lab1.css")
     global resource_created
     status = "Ресурс создан" if resource_created else "Ресурс ещё не создан"
     create_link = url_for('create_resource')
@@ -164,7 +190,7 @@ def resource_status():
 <!doctype html>
 <html>
     <head>
-        <title>Статус ресурса</title>
+        <link rel="stylesheet" type="text/css" href={css_path}>
     </head>
     <body>
         <h1>Статус ресурса</h1>
@@ -255,9 +281,13 @@ def lab1():
 
 @app.route("/lab1/400")
 def error_400():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>400: Bad Request</h1>
         <p>Ошибка 400: Сервер не может обработать запрос из-за ошибки клиента.</p>
@@ -268,9 +298,13 @@ def error_400():
 
 @app.route("/lab1/401")
 def error_401():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>401: Unauthorized</h1>
         <p>Ошибка 401: Необходима аутентификация для доступа к ресурсу.</p>
@@ -281,9 +315,13 @@ def error_401():
 
 @app.route("/lab1/402")
 def error_402():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>402: Payment Required</h1>
         <p>Ошибка 402: Требуется оплата для доступа к ресурсу.</p>
@@ -294,9 +332,13 @@ def error_402():
 
 @app.route("/lab1/403")
 def error_403():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>403: Forbidden</h1>
         <p>Ошибка 403: Доступ к ресурсу запрещен.</p>
@@ -307,9 +349,13 @@ def error_403():
 
 @app.route("/lab1/405")
 def error_405():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>405: Method Not Allowed</h1>
         <p>Ошибка 405: Метод запроса не поддерживается данным ресурсом.</p>
@@ -320,9 +366,13 @@ def error_405():
 
 @app.route("/lab1/418")
 def error_418():
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>418: I'm a teapot</h1>
         <p>Ошибка 418: Я чайник. Запрос не может быть обработан, так как сервер — это чайник.</p>
@@ -338,9 +388,13 @@ def trigger_error():
 
 @app.errorhandler(500)
 def internal_server_error(e):
+    css_path = url_for("static", filename="lab1.css")
     return '''
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
+    </head>
     <body>
         <h1>Ошибка 500: Внутренняя ошибка сервера</h1>
         <a href="/lab1">Вернуться на страницу лабораторной 1</a>
@@ -351,32 +405,38 @@ def internal_server_error(e):
 
 @app.route("/lab1/custom_route")
 def custom_route():
-    # Подготовка HTML содержимого
+    css_path = url_for("static", filename="lab1.css")
     img_path = url_for("static", filename="oak.jpg")
     content = """
 <!doctype html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
         <title>Текст с картинкой</title>
     </head>
     <body>
         <h1>Добро пожаловать на страницу с текстом и изображением</h1>
-        <p>Это первый абзац текста. Здесь может быть ваше описание или история. Flask — это мощный фреймворк для создания веб-приложений.</p>
-        <p>Во втором абзаце рассказывается о возможностях Flask, таких как маршрутизация, обработка шаблонов и управление данными с помощью различных библиотек.</p>
-        <p>Третий абзац посвящен тому, как легко интегрировать CSS и JavaScript в страницы Flask для улучшения пользовательского интерфейса.</p>
-        <p>Здесь можно размещать изображения и другие мультимедиа:</p>
-        <img src='""" + img_path + """' alt="Пример изображения" style="width:400px;height:auto;">
+        <p>Равным образом постоянный количественный рост и сфера нашей активности играет важную роль в формировании новых предложений. 
+        Не следует, однако забывать, что дальнейшее развитие различных форм деятельности позволяет оценить значение новых предложений. 
+        С другой стороны начало повседневной работы по формированию позиции требуют от нас анализа системы обучения кадров, соответствует 
+        насущным потребностям. Равным образом постоянный количественный рост и сфера нашей активности играет важную роль в формировании 
+        направлений прогрессивного развития.</p>
+        <p>Задача организации, в особенности же сложившаяся структура организации требуют от нас анализа систем массового участия. 
+        Идейные соображения высшего порядка, а также постоянное информационно-пропагандистское обеспечение нашей деятельности обеспечивает 
+        широкому кругу (специалистов) участие в формировании дальнейших направлений развития.</p>
+        <p>Идейные соображения высшего порядка, а также рамки и место обучения кадров влечет за собой процесс внедрения и модернизации 
+        соответствующий условий активизации. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности 
+        требуют определения и уточнения модели развития. Повседневная практика показывает, что консультация с широким активом представляет 
+        собой интересный эксперимент проверки форм развития.</p>
+        <img src='""" + img_path + """' style="width:400px;height:auto;">
     </body>
 </html>
     """
     
-    # Создание ответа с содержимым
     response = make_response(content)
 
-    # Добавление заголовка Content-Language
-    response.headers["Content-Language"] = "ru"  # Указываем, что страница на русском языке
+    response.headers["Content-Language"] = "ru"
 
-    # Добавление двух нестандартных заголовков
     response.headers["X-Custom-Header"] = "StudentProject"
     response.headers["X-Page-Info"] = "CustomRouteWithImage"
 
