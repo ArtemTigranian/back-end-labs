@@ -441,3 +441,11 @@ def custom_route():
     response.headers["X-Page-Info"] = "CustomRouteWithImage"
 
     return response
+
+@app.route('/lab2/a')
+def a():
+    return 'без слэша'
+
+@app.route('/lab2/a/')
+def a2():
+    return 'со слэшем'
