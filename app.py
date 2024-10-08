@@ -19,7 +19,8 @@ def web():
                 </header>
                 <main>
                     <h1>web-сервер на flask</h1>
-                    <a href="/lab1">Меню</a>
+                    <a href="/lab1">Меню Лабораторной 1</a>
+                    <a href="/lab2">Меню Лабораторной 2</a>
                 </main>
                 <footer>
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
@@ -557,7 +558,6 @@ def calc(a, b):
     umnozh = a * b
     delen = a / b if b != 0 else 'ДЕЛИТЬ НА 0 НЕЛЬЗЯ'  
     stepen = a ** b
-
     return f"""
     <!doctype html>
     <html>
