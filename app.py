@@ -539,19 +539,7 @@ def calc(a, b):
     umnozh = a * b
     delen = a / b if b != 0 else 'ДЕЛИТЬ НА 0 НЕЛЬЗЯ'  
     stepen = a ** b
-    return f"""
-    <!doctype html>
-    <html>
-        <body>
-            <h1>Расчёт с параметрами:</h1>
-            <p>{a} + {b} = {slozh}</p>
-            <p>{a} - {b} = {vych}</p>
-            <p>{a} × {b} = {umnozh}</p>
-            <p>{a} / {b} = {delen}</p>
-            <p>{a}<sup>{b}</sup> = {stepen}</p>
-        </body>
-    </html>
-    """
+    return  render_template('calc.html', slozh=slozh, vych=vych, umnozh=umnozh, delen=delen, stepen=stepen, a=a, b=b)
 
 @app.route('/lab2/calc/')
 def calc_default():
