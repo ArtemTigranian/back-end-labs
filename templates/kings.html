@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Лабораторная работа 2 {% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <style>
+        .king {
+            margin-bottom: 20px;
+            border: 3px solid white;
+            width: 1000px;
+            display: flex;
+        }
+        .king img {
+            width: 200px;
+            margin: 10px;
+        }
+        .king-info {
+            width: 800px;
+            padding: 10px;
+        }
+        h2{
+            text-align: center;
+        }
+
+
+    </style>
+    <h1>Список величайших царей Армении</h1>
+    <div>
+        {% for king in kings %}
+        <div class="king">
+            <img src="{{ king.image }}">
+            <div class="king-info">
+                <h2>{{ king.name }}</h2>
+                <p>{{ king.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
