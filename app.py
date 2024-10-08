@@ -1,4 +1,4 @@
-from flask import Flask, url_for, redirect, make_response, render_template
+from flask import Flask, url_for, redirect, render_template
 
 # ЛАБОРАТОРНАЯ РАБОТА 1
 
@@ -25,7 +25,11 @@ def web():
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
                 </footer>
             </body>
-        </html>""", 200
+        </html>""", 200, {
+            "X-Server": "sample",
+            "Content-Type": "text/html; charset=utf-8"
+         } 
+        
 
 @app.route("/lab1/author")
 def author():
@@ -410,7 +414,7 @@ def internal_server_error(e):
 def custom_route():
     css_path = url_for("static", filename="lab1.css")
     img_path = url_for("static", filename="oak.jpg")
-    content = """
+    return """
 <!doctype html>
 <html>
     <head>
@@ -434,16 +438,11 @@ def custom_route():
         <img src='""" + img_path + """' style="width:400px;height:auto;">
     </body>
 </html>
-    """
-    
-    response = make_response(content)
-
-    response.headers["Content-Language"] = "ru"
-
-    response.headers["X-Custom-Header"] = "StudentProject"
-    response.headers["X-Page-Info"] = "CustomRouteWithImage"
-
-    return response
+""",{
+        "Content-Language": "ru",
+        "Content-Type": "text/html; charset=utf-8",
+        "X-Server": "sample"
+    } 
 
 
 # ЛАБОРАТОРНАЯ РАБОТА 2
@@ -463,10 +462,23 @@ def flowers(flower_id):
     if flower_id >= len(flower_list):
         return 'такого цветка нет', 404
     else:
-        return 'Цветок: ' + flower_list[flower_id]
-    
+        return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Цветок: {flower_list[flower_id]}</h1>
+        <p>Идентификатор цветка: {flower_id}</p>
+        <a href="/lab2/all_flowers">Посмотреть все цветы</a> |
+        <a href="/lab2/clear_flowers">Очистить список цветов</a>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/add_flower/')
 @app.route('/lab2/add_flower/<name>')
-def add_flower(name):
+def add_flower(name=None):
+    if not name:
+        return 'вы не задали имя цветка', 400
     flower_list.append(name)
     return f'''
 <!doctype html>
@@ -475,9 +487,41 @@ def add_flower(name):
         <h1>Добавлен новый цветок</h1>
         <p>Название нового цветка: {name} </p>
         <p>Всего цветов: {len(flower_list)} </p>
-        <p>Полный список цветов: {(flower_list)} </p>
+        <a href="/lab2/all_flowers">Посмотреть все цветы</a> |
+        <a href="/lab2/flowers/0">Перейти к первому цветку</a>
     </body>
-</html>'''
+</html>
+'''
+
+@app.route('/lab2/all_flowers')
+def all_flowers():
+    flower_list_html = ''.join([f'<li>{flower}</li>' for flower in flower_list])
+    return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Все цветы</h1>
+        <p>Всего цветов: {len(flower_list)}</p>
+        <ul>{flower_list_html}</ul>
+        <a href="/lab2/clear_flowers">Очистить список цветов</a>
+    </body>
+</html>
+'''
+
+@app.route('/lab2/clear_flowers')
+def clear_flowers():
+    flower_list.clear()
+    return '''
+<!doctype html>
+<html>
+    <body>
+        <h1>Список цветов очищен</h1>
+        <a href="/lab2/all_flowers">Посмотреть все цветы</a>
+    </body>
+</html>
+'''
+
+
 
 @app.route('/lab2/example')
 def example():

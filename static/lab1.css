@@ -76,6 +76,6 @@ h1.menu{
 img {
     display: block;
     margin: 0 auto;
-    width: 300px; /* Задайте ширину изображения */
-    height: auto; /* Автоматическая высота для сохранения пропорций */
+    width: 300px;
+    height: auto;
 }
