@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect, request
+from flask import Blueprint, url_for, redirect
 lab1 = Blueprint('lab1', __name__)
 
 
@@ -213,36 +213,6 @@ def resource_status():
     '''
 
 
-@lab1.errorhandler(404)
-def not_found(err):
-    css_path = url_for("static", filename="lab1.css")
-    img_path = url_for("static", filename="trollface.jpg")
-    return """
-<!doctype html>
-<html>
-    <head>
-        <title>Ошибка 404 - Страница не найдена</title>
-        <link rel="stylesheet" type="text/css" href='""" + css_path + """'>
-        <style>
-            h1{
-                text-align: center;
-            }
-            p{
-                text-align: center;
-            }
-        </style>
-    </head>
-    <body>
-        <main>
-            <h1>ОШИБКА 404</h1>
-            <p>НЕТ ТАКОЙ СТРАНИЦЫ</p>
-            <img src='""" + img_path + """'>
-            <p>Попробуйте вернуться <a href="/">на главную страницу</a>.</p>
-        </main>    
-    </body>
-</html>""", 404
-
-
 @lab1.route("/lab1")
 def lab():
     css_path = url_for("static", filename="lab1.css")
@@ -402,23 +372,6 @@ def error_418():
 def trigger_error():
     error = 1 / 0
     return
-
-
-@lab1.errorhandler(500)
-def internal_server_error(e):
-    css_path = url_for("static", filename="lab1.css")
-    return '''
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="''' + css_path + '''">
-    </head>
-    <body>
-        <h1>Ошибка 500: Внутренняя ошибка сервера</h1>
-        <a href="/lab1">Вернуться на страницу лабораторной 1</a>
-    </body>
-</html>
-    ''', 500
 
 
 @lab1.route("/lab1/custom_route")
