@@ -1,10 +1,12 @@
 from flask import Flask, url_for
 from lab1 import lab1
 from lab2 import lab2
+from lab3 import lab3
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 @app.route("/")
 def start():
@@ -22,6 +24,7 @@ def start():
                     <h1>web-сервер на flask</h1>
                     <a href="/lab1">Меню Лабораторной 1</a>
                     <a href="/lab2">Меню Лабораторной 2</a>
+                    <a href="/lab3">Меню Лабораторной 3</a>
                 </main>
                 <footer>
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
@@ -30,7 +33,7 @@ def start():
         </html>""" 
 
 
-@lab1.errorhandler(404)
+@app.errorhandler(404)
 def not_found(err):
     css_path = url_for("static", filename="lab1.css")
     img_path = url_for("static", filename="trollface.jpg")
@@ -60,7 +63,7 @@ def not_found(err):
 </html>""", 404
 
 
-@lab1.errorhandler(500)
+@app.errorhandler(500)
 def internal_server_error(e):
     css_path = url_for("static", filename="lab1.css")
     return '''
