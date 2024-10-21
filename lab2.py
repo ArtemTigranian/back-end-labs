@@ -33,7 +33,7 @@ def flowers(flower_id):
         return 'такого цветка нет', 404
     else:
         flower = flower_list[flower_id]
-        return render_template('flower.html', flower_list=flower_list, flower=flower, flower_id=flower_id)
+        return render_template('lab2/flower.html', flower_list=flower_list, flower=flower, flower_id=flower_id)
 
 
 @lab2.route('/lab2/all_flowers')
@@ -55,7 +55,7 @@ def add_flower():
 @lab2.route('/lab2/clear_flowers')
 def clear_flowers():
     flower_list.clear()
-    return render_template('clear_flowers.html')
+    return render_template('lab2/clear_flowers.html')
 
 
 @lab2.route('/lab2/delete_flower/<int:flower_id>')
@@ -81,7 +81,7 @@ def example():
         {'name': 'ананасы', 'price': 240},
         {'name': 'апельсины', 'price': 30},
     ]
-    return render_template('example.html', 
+    return render_template('lab2/example.html', 
                            name=name, course=course, lab_number=lab_number, 
                            group_number=group_number, fruits=fruits)
 
@@ -89,7 +89,7 @@ def example():
 @lab2.route('/lab2/filters')
 def filters():
     phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...'
-    return render_template('filter.html', phrase=phrase)
+    return render_template('lab2/filter.html', phrase=phrase)
 
 
 @lab2.route('/lab2/calc/<int:a>/<int:b>')
@@ -99,7 +99,7 @@ def calc(a, b):
     umnozh = a * b
     delen = a / b if b != 0 else 'ДЕЛИТЬ НА 0 НЕЛЬЗЯ'  
     stepen = a ** b
-    return  render_template('calc.html', slozh=slozh, vych=vych, umnozh=umnozh, delen=delen, stepen=stepen, a=a, b=b)
+    return  render_template('lab2/calc.html', slozh=slozh, vych=vych, umnozh=umnozh, delen=delen, stepen=stepen, a=a, b=b)
 
 
 @lab2.route('/lab2/calc/')
@@ -128,7 +128,7 @@ books = [
 
 @lab2.route('/lab2/books')
 def books_list():
-    return render_template('books.html', books=books)
+    return render_template('lab2/books.html', books=books)
 
 
 kings = [
@@ -167,4 +167,4 @@ kings = [
 
 @lab2.route('/lab2/kings')
 def cars_list():
-    return render_template('kings.html', kings=kings)
+    return render_template('lab2/kings.html', kings=kings)
