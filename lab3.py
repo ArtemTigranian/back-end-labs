@@ -29,6 +29,10 @@ def del_cookie():
     resp.delete_cookie('name')
     resp.delete_cookie('age')
     resp.delete_cookie('name_color')
+    resp.delete_cookie('bcolor')
+    resp.delete_cookie('color')
+    resp.delete_cookie('font_size')
+    resp.delete_cookie('font_family')
     return resp
 
 
@@ -80,6 +84,7 @@ def success():
 @lab3.route('/lab3/settings')
 def settings():
     bcolor = request.args.get('bcolor')
+    color = request.args.get('color')
     font_size = request.args.get('font_size')
     font_family = request.args.get('font_family')
 
@@ -87,12 +92,14 @@ def settings():
 
     if bcolor:
         resp.set_cookie('bcolor', bcolor)
+    if color:
+        resp.set_cookie('color', color)
     if font_size:
         resp.set_cookie('font_size', font_size)
     if font_family:
         resp.set_cookie('font_family', font_family)
 
-    if bcolor or font_size or font_family:
+    if bcolor or font_size or font_family or color:
         return resp
 
-    return render_template('lab3/settings.html', bcolor=request.cookies.get('bcolor'), font_size=request.cookies.get('font_size'), font_family=request.cookies.get('font_family'))
+    return render_template('lab3/settings.html', bcolor=request.cookies.get('bcolor'), color=request.cookies.get('color'), font_size=request.cookies.get('font_size'), font_family=request.cookies.get('font_family'))
