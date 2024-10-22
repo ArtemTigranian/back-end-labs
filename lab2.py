@@ -4,7 +4,7 @@ lab2 = Blueprint('lab2', __name__)
 
 @lab2.route('/lab2/')    
 def lab():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 
 @lab2.route('/lab2/a')
@@ -38,7 +38,7 @@ def flowers(flower_id):
 
 @lab2.route('/lab2/all_flowers')
 def all_flowers():
-    return render_template('all_flowers.html', flowers=flower_list, flower_count=len(flower_list))
+    return render_template('lab2/all_flowers.html', flowers=flower_list, flower_count=len(flower_list))
 
 
 @lab2.route('/lab2/add_flower', methods=['post'])
@@ -135,32 +135,32 @@ kings = [
     {
         "name": "Арташес I - Արտաշես",
         "description": "Один из величайших древних армянских царей. Правил еще в 189-160 годах до нашей эры. Известен как знаменитый реформатор, собиратель армянских земель в Мец Хайк - Великую Армению.",
-        "image": "/static/artashes.png"
+        "image": "/static/lab2/artashes.png"
     },
     {
         "name": "Тигран II Великий - Տիգրան",
         "description": "Величайший правитель в армянской истории. Царь Великой Армении из династии Арташесидов, чьи владения в I веке до нашей эры простирались от Каспия до Иерусалима.",
-        "image": "/static/tigran.png"
+        "image": "/static/lab2/tigran.png"
     },
     {
         "name": "Трдат III - Տրդատ Գ Մեծ",
         "description": "Армянский царь из династии Аршакидов, правивший в IV веке нашей эры. Именно в эпоху Трдата произошло величайшее событие мировой важности - армяне первыми в истории приняли христианскую веру. А сам он вошел в историю как государь-креститель нации.",
-        "image": "/static/trdat.png"
+        "image": "/static/lab2/trdat.png"
     },
     {
         "name": "Царь Пап - Պապ",
         "description": "Правивший в конце IV века нашей эры армянский царь из династии Аршакидов. Вошел в историю как умный и отважный царь, реформатор церкви, победитель персов в битве у Багавана. Увы, пал жертвой подлости римлян...",
-        "image": "/static/pap.png"
+        "image": "/static/lab2/pap.png"
     },
     {
         "name": "Ашот II Еркат (Железный) - Աշոտ Բ Երկաթ",
         "description": "Этот великий царь из династии Багратуни правил в IX веке нашей эры. Именно Ашот Еркат в битве на Севане разбил арабов, избавив Армению от владычества Халифата.",
-        "image": "/static/ashot.png"
+        "image": "/static/lab2/ashot.png"
     },
     {
         "name": "Левон I Киликийский - Լեւոն Բ Մեծագործ",
         "description": "Этот армянский царь из династии Рубенидов правил в конце XII века в Киликийской Армении. И сделал свою державу одним из величайших на Средиземном море, центром армянской государственности после падения Ани и Багратидской Армении.",
-        "image": "/static/levon.png"
+        "image": "/static/lab2/levon.png"
     }
 ]
 
