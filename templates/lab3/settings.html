@@ -10,12 +10,12 @@
     
     <form>
         <div>
-            <label for="color">Выберите цвет текста:</label>
-            <input type="color" id="color" name="color" value="{{ color or '' }}">
+            <label for="color">Выберите цвет фона:</label>
+            <input type="color" id="bcolor" name="bcolor" value="{{ bcolor or '' }}">
         </div>
         <div>
-            <label for="font_size">Выберите размер шрифта (px):</label>
-            <input type="number" id="font_size" name="font_size" min="10" max="100" value="{{ font_size or 16 }}">
+            <label for="font_size">Выберите размер шрифта (pt):</label>
+            <input type="number" id="font_size" name="font_size" min="10" max="100" value="{{ font_size or 18 }}">
         </div>
         <div>
             <label for="font_family">Выберите семейство шрифтов:</label>

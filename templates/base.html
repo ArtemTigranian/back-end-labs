@@ -10,11 +10,11 @@
     <title>Артем Тигранян. {%block lab%}{%endblock%}</title>
     <style>
         body {
-            {% if request.cookies.get('color') %}
-            background-color: {{ request.cookies.get('color') }};
+            {% if request.cookies.get('bcolor') %}
+            background-color: {{ request.cookies.get('bcolor') }};
             {% endif %}
             {% if request.cookies.get('font_size') %}
-            font-size: {{ request.cookies.get('font_size') }}px;
+            font-size: {{ request.cookies.get('font_size') }}pt;
             {% endif %}
             {% if request.cookies.get('font_family') %}
             font-family: {{ request.cookies.get('font_family') }};

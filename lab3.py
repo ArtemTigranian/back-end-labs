@@ -5,8 +5,13 @@ lab3 = Blueprint('lab3', __name__)
 @lab3.route('/lab3/')
 def lab():
     name = request.cookies.get('name')
+    age = request.cookies.get('age')
     name_color = request.cookies.get('name_color')
-    return render_template('lab3/lab3.html', name=name, name_color=name_color)
+    if name is None:
+        name = 'Анонимус'
+    if age is None:
+        age = 'неизвестно'
+    return render_template('lab3/lab3.html', name=name, name_color=name_color, age=age)
 
 
 @lab3.route('/lab3/cookie')
@@ -14,7 +19,7 @@ def cookie():
     resp = make_response(redirect('/lab3'))
     resp.set_cookie('name', 'Artem', max_age=5)
     resp.set_cookie('age', '19')
-    resp.set_cookie('name_color', 'magenta')
+    resp.set_cookie('name_color', 'limegreen')
     return resp
 
 
@@ -74,20 +79,20 @@ def success():
 
 @lab3.route('/lab3/settings')
 def settings():
-    color = request.args.get('color')
+    bcolor = request.args.get('bcolor')
     font_size = request.args.get('font_size')
     font_family = request.args.get('font_family')
 
     resp = make_response(redirect('/lab3/settings'))
 
-    if color:
-        resp.set_cookie('color', color)
+    if bcolor:
+        resp.set_cookie('bcolor', bcolor)
     if font_size:
         resp.set_cookie('font_size', font_size)
     if font_family:
         resp.set_cookie('font_family', font_family)
 
-    if color or font_size or font_family:
+    if bcolor or font_size or font_family:
         return resp
 
-    return render_template('lab3/settings.html', color=request.cookies.get('color'), font_size=request.cookies.get('font_size'), font_family=request.cookies.get('font_family'))
+    return render_template('lab3/settings.html', bcolor=request.cookies.get('bcolor'), font_size=request.cookies.get('font_size'), font_family=request.cookies.get('font_family'))

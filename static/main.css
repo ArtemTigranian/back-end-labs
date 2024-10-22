@@ -3,6 +3,7 @@ body {
     /* color: rgb(46, 44, 47); */
     font-family: Arial;
     margin: 0px 0px 67px;
+
 }
 
 header{
@@ -25,7 +26,7 @@ footer{
 
 main {
     color: rgb(46, 44, 47);
-    font-size:18pt;
+    /* font-size:18pt; */
     padding: 10px;
 }
 
