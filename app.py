@@ -10,7 +10,7 @@ app.register_blueprint(lab3)
 
 @app.route("/")
 def start():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return """<!doctype html>
         <html>
             <head>

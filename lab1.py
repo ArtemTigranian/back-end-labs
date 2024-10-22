@@ -4,7 +4,7 @@ lab1 = Blueprint('lab1', __name__)
 
 @lab1.route("/lab1/web")
 def web():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return """<!doctype html>
         <html>
             <head>
@@ -31,7 +31,7 @@ def web():
 
 @lab1.route("/lab1/author")
 def author():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     name = "Тигранян Артём Паруйрович"
     group = "ФБИ-21"
     faculty = "ФБ"
@@ -52,8 +52,8 @@ def author():
 
 @lab1.route("/lab1/oak")
 def oak():
-    css_path = url_for("static", filename="lab1.css")
-    img_path = url_for("static", filename = "oak.jpg")
+    css_path = url_for("static", filename="lab1/lab1.css")
+    img_path = url_for("static", filename = "lab1/oak.jpg")
     return """
 <!doctype html>
 <html>
@@ -73,7 +73,7 @@ count = 0
 
 @lab1.route("/lab1/counter")
 def counter():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     global count
     count += 1
     return '''
@@ -93,7 +93,7 @@ def counter():
 
 @lab1.route("/lab1/reset_counter")
 def reset_counter():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     global count
     count = 0
     return '''
@@ -121,7 +121,7 @@ resource_created = False
 
 @lab1.route("/lab1/created")
 def create_resource():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     global resource_created
     if not resource_created:
         resource_created = True
@@ -156,7 +156,7 @@ def create_resource():
 
 @lab1.route("/lab1/delete")
 def delete_resource():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     global resource_created
     if resource_created:
         resource_created = False
@@ -191,7 +191,7 @@ def delete_resource():
 
 @lab1.route("/lab1/resource")
 def resource_status():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     global resource_created
     status = "Ресурс создан" if resource_created else "Ресурс ещё не создан"
     create_link = url_for('create_resource')
@@ -215,7 +215,7 @@ def resource_status():
 
 @lab1.route("/lab1")
 def lab():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return """
 <!doctype html>
 <html>
@@ -262,7 +262,7 @@ def lab():
 
 @lab1.route("/lab1/400")
 def error_400():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -280,7 +280,7 @@ def error_400():
 
 @lab1.route("/lab1/401")
 def error_401():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -298,7 +298,7 @@ def error_401():
 
 @lab1.route("/lab1/402")
 def error_402():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -316,7 +316,7 @@ def error_402():
 
 @lab1.route("/lab1/403")
 def error_403():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -334,7 +334,7 @@ def error_403():
 
 @lab1.route("/lab1/405")
 def error_405():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -352,7 +352,7 @@ def error_405():
 
 @lab1.route("/lab1/418")
 def error_418():
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     return '''
 <!doctype html>
 <html>
@@ -376,8 +376,8 @@ def trigger_error():
 
 @lab1.route("/lab1/custom_route")
 def custom_route():
-    css_path = url_for("static", filename="lab1.css")
-    img_path = url_for("static", filename="oak.jpg")
+    css_path = url_for("static", filename="lab1/lab1.css")
+    img_path = url_for("static", filename="lab1/oak.jpg")
     return """
 <!doctype html>
 <html>
