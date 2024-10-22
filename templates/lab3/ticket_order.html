@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Лабораторная работа 3 {% endblock %}
+
+{# основной контент: #}
+{% block main %}
+<style>
+    form{
+        border: solid 5px;
+        border-radius: 20px;
+        background-color: rgb(57, 173, 123);
+        width: 500px;
+        height: 850px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 10px;
+        padding-left: 30px;
+        font-size: 20pt;
+    }
+    div{
+        padding-top: 30px;
+        transition: 0.2s;
+    }
+
+    div:hover{
+        font-size: 21pt;
+        transition: 0.2s;
+    }
+</style>
+
+<h1 style="text-align: center;">Покупка железнодорожного билета</h1>
+
+<form action="/lab3/ticket_success" method="POST">
+
+    <div style="padding-top: 0px;">ФИО пассажира:</div>
+    <label>
+        <input type="text" name="full_name">
+    </label>
+    
+    <div>Возраст:</div>
+    <label>
+        <input type="number" name="age">
+    </label>
+
+    <div>Откуда (город отправления):</div>
+    <label>
+        <input type="text" name="departure">
+    </label>
+
+    <div>Куда (город назначения):</div>
+    <label>
+        <input type="text" name="destination">
+    </label>
+
+    <div>Дата поездки:</div>
+    <label>
+        <input type="date" name="travel_date">
+    </label>
+
+    <div>Выберите место:</div>
+    <label>
+        <input type="radio" value="верхняя полка" name="seat_type" checked>верхняя полка
+    </label>
+    <label>
+        <input type="radio" value="верхняя боковая полка" name="seat_type" checked>верхняя боковая полка
+    </label> <br>
+    <label>
+        <input type="radio" value="нижняя полка" name="seat_type" checked>нижняя полка
+    </label>
+    <label>
+        <input type="radio" value="нижняя боковая полка" name="seat_type" checked>нижняя боковая полка
+    </label>
+
+    <div>
+        Белье:
+        <label>
+            <input type="checkbox" name="bed">нужно
+        </label>
+    </div>
+
+    <div>
+        Багаж:
+        <label>
+            <input type="checkbox" name="luggage">есть
+        </label>
+    </div>
+
+    <div>
+        Страховка:
+        <label>
+            <input type="checkbox" name="insurance">нужна
+        </label>
+    </div> <br>
+
+    <button type="submit">Купить</button>
+</form>
+{% endblock %}

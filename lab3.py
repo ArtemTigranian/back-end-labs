@@ -103,3 +103,62 @@ def settings():
         return resp
 
     return render_template('lab3/settings.html', bcolor=request.cookies.get('bcolor'), color=request.cookies.get('color'), font_size=request.cookies.get('font_size'), font_family=request.cookies.get('font_family'))
+
+
+@lab3.route('/lab3/ticket_order')
+def ticket_order():
+    return render_template('lab3/ticket_order.html')
+
+
+@lab3.route('/lab3/ticket_success', methods=['POST'])
+def ticket_success():
+    errors = {}
+    
+    full_name = request.form.get('full_name')
+    if not full_name:
+            errors['full_name'] = 'Заполните ФИО'
+
+    seat_type = request.form.get('seat_type')
+    if not seat_type:
+        errors['seat_type'] = 'Выберите тип полки'
+
+    age = request.form.get('age')
+    age = int(age)
+    if not age:
+        errors['age'] = 'Укажите корректный возраст (от 1 до 120 лет)'
+    elif age is None:
+        age=0
+
+    departure = request.form.get('departure')
+    if not departure:
+        errors['departure'] = 'Укажите пункт выезда'
+
+    destination = request.form.get('destination')
+    if not destination:
+        errors['destination'] = 'Укажите пункт назначения'
+    
+    travel_date = request.form.get('travel_date')
+    if not travel_date:
+            errors['travel_date'] = 'Укажите дату поездки'
+
+    insurance = request.form.get('insurance') == 'on'
+    bed = request.form.get('bed') == 'on'
+    luggage = request.form.get('luggage') == 'on'
+
+    ticket_type = "Детский билет" if age < 18 else "Взрослый билет"
+    
+
+    price = 1000 if age >= 18 else 700
+    if seat_type == 'нижняя полка' or seat_type == 'нижняя боковая полка':
+        price += 100
+    if bed:
+        price += 75
+    if luggage:
+        price += 250
+    if insurance:
+        price += 150
+    
+    return render_template('lab3/ticket_success.html', full_name=full_name, seat_type=seat_type, bed=bed, luggage=luggage, 
+                           departure=departure, destination=destination, travel_date=travel_date, 
+                           insurance=insurance, price=price, age=age, ticket_type=ticket_type)
+

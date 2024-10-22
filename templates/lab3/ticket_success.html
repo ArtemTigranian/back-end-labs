@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Лабораторная работа 3 {% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <style>
+        div{
+            border: solid 5px;
+            border-radius: 20px;
+            background-color: rgb(57, 173, 123);
+            width: 500px;
+            height: 420px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 10px;
+            padding-left: 30px;
+            font-size: 20pt;
+        }
+    </style>
+    <h1 style="text-align: center;">Вот ваш билет!</h1>
+    <div>
+        ФИО: {{ full_name }} <br>
+        Возраст: {{ age }} <br>
+        Пункт выезда: {{ departure }} <br>
+        Пункт назначения: {{ destination }} <br>
+        Дата поездки: {{ travel_date }} <br>
+        Полка: {{ seat_type }} <br>
+        С бельём: {{ 'Да' if bed else 'Нет' }} <br>
+        С багажом: {{ 'Да' if luggage else 'Нет' }} <br>
+        Нужна ли страховка: {{ 'Да' if insurance else 'Нет' }} <br>
+        <h3>{{ ticket_type }}</h3>
+        <h3>Стоимость билета: {{ price }} руб.</h3>
+    </div>
+{% endblock %}
