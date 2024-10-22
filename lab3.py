@@ -48,6 +48,8 @@ def form1():
         errors['age'] = 'Заполните поле!'
 
     sex = request.args.get('sex')
+    if sex == '':
+        errors['sex'] = 'Заполните поле!'
     return render_template('lab3/form1.html', user=user, age=age, sex=sex, errors=errors)
 
 
@@ -162,3 +164,41 @@ def ticket_success():
                            departure=departure, destination=destination, travel_date=travel_date, 
                            insurance=insurance, price=price, age=age, ticket_type=ticket_type)
 
+
+products = [
+    {"name": "Lexus", "price": 800, "type": "RX270", "color": "Черный"},
+    {"name": "Lexus", "price": 700, "type": "RX300", "color": "Серебристый"},
+    {"name": "Lexus", "price": 600, "type": "RX330", "color": "Белый"},
+    {"name": "Lexus", "price": 500, "type": "RX350", "color": "Красный"},
+    {"name": "Lexus", "price": 1500, "type": "RX400h", "color": "Черный"},
+    {"name": "Lexus", "price": 1200, "type": "RX450h", "color": "Серебристый"},
+    {"name": "Lexus", "price": 1300, "type": "GX460", "color": "Серебристый"},
+    {"name": "Lexus", "price": 250, "type": "GX470", "color": "Черный"},
+    {"name": "Lexus", "price": 400, "type": "GX500", "color": "Красный"},
+    {"name": "Infiniti", "price": 200, "type": "FX30d", "color": "Белый"},
+    {"name": "Infiniti", "price": 500, "type": "FX35", "color": "Белый"},
+    {"name": "Infiniti", "price": 550, "type": "FX37", "color": "Черный"},
+    {"name": "Infiniti", "price": 300, "type": "FX45", "color": "Черный"},
+    {"name": "Infiniti", "price": 2000, "type": "FX50", "color": "Черный"},
+    {"name": "BMW", "price": 1800, "type": "M2", "color": "Черный"},
+    {"name": "BMW", "price": 200, "type": "M3", "color": "Белый"},
+    {"name": "BMW", "price": 150, "type": "M4", "color": "Черный"},
+    {"name": "BMW", "price": 1000, "type": "M5", "color": "Синий"},
+    {"name": "BMW", "price": 1100, "type": "M6", "color": "Черный"},
+    {"name": "BMW", "price": 900, "type": "M8", "color": "Серебристый"}
+]
+
+@lab3.route('/lab3/filter')
+def index():
+    return render_template('lab3/filter.html')
+
+@lab3.route('/lab3/search', methods=['POST'])
+def search():
+    min_price = int(request.form.get('min_price'))
+    max_price = int(request.form.get('max_price'))
+    if not min_price or not max_price:
+        return 'Заполните поля'
+
+    filtered_products = [product for product in products if min_price <= product['price'] <= max_price]
+    
+    return render_template('lab3/search.html', products=filtered_products)

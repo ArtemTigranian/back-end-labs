@@ -35,7 +35,7 @@ def start():
 
 @app.errorhandler(404)
 def not_found(err):
-    css_path = url_for("static", filename="lab1.css")
+    css_path = url_for("static", filename="lab1/lab1.css")
     img_path = url_for("static", filename="trollface.jpg")
     return """
 <!doctype html>
