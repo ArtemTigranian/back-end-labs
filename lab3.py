@@ -196,8 +196,6 @@ def index():
 def search():
     min_price = int(request.form.get('min_price'))
     max_price = int(request.form.get('max_price'))
-    if not min_price or not max_price:
-        return 'Заполните поля'
 
     filtered_products = [product for product in products if min_price <= product['price'] <= max_price]
     
