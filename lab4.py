@@ -1,14 +1,16 @@
 from flask import Blueprint, url_for, redirect, render_template, request, make_response
 lab4 = Blueprint('lab4', __name__)
 
+
 @lab4.route('/lab4/')
 def lab():
     return render_template('lab4/lab4.html')
 
-# Деление
+
 @lab4.route('/lab4/div-form')
 def div_form():
     return render_template('lab4/div-form.html')
+
 
 @lab4.route('/lab4/div', methods = ['POST'])
 def div():
@@ -22,10 +24,11 @@ def div():
 
     return render_template('lab4/div.html', x1=x1, x2=x2, result=result)
 
-# Сложение
+
 @lab4.route('/lab4/sum-form')
 def sum_form():
     return render_template('lab4/sum-form.html')
+
 
 @lab4.route('/lab4/sum', methods=['POST'])
 def sum():
@@ -34,10 +37,11 @@ def sum():
     result = x1 + x2
     return render_template('lab4/sum.html', x1=x1, x2=x2, result=result)
 
-# Умножение
+
 @lab4.route('/lab4/mul-form')
 def mul_form():
     return render_template('lab4/mul-form.html')
+
 
 @lab4.route('/lab4/mul', methods=['POST'])
 def mul():
@@ -46,10 +50,11 @@ def mul():
     result = x1 * x2
     return render_template('lab4/mul.html', x1=x1, x2=x2, result=result)
 
-# Вычитание
+
 @lab4.route('/lab4/sub-form')
 def sub_form():
     return render_template('lab4/sub-form.html')
+
 
 @lab4.route('/lab4/sub', methods=['POST'])
 def sub():
@@ -62,10 +67,11 @@ def sub():
     result = x1 - x2
     return render_template('lab4/sub.html', x1=x1, x2=x2, result=result)
 
-# Возведение в степень
+
 @lab4.route('/lab4/exp-form')
 def exp_form():
     return render_template('lab4/exp-form.html')
+
 
 @lab4.route('/lab4/exp', methods=['POST'])
 def exp():
@@ -97,3 +103,18 @@ def tree():
         tree_count += 1
 
     return redirect('/lab4/tree')
+
+
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('lab4/login.html', authorized=False)
+    
+    login = request.form.get('login')
+    password = request.form.get('login')
+
+    if login == 'alex' and password == '123':
+        return render_template('lab4/login.html', login=login, authorized=True)
+
+    error = 'Неверные логин и/или пароль'
+    return render_template('lab4/login.html', error=error, authorized=False)
