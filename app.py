@@ -2,11 +2,13 @@ from flask import Flask, url_for
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
+from lab4 import lab4
 
 app = Flask(__name__)
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
+app.register_blueprint(lab4)
 
 @app.route("/")
 def start():
@@ -25,6 +27,7 @@ def start():
                     <a href="/lab1">Меню Лабораторной 1</a>
                     <a href="/lab2">Меню Лабораторной 2</a>
                     <a href="/lab3">Меню Лабораторной 3</a>
+                    <a href="/lab4">Меню Лабораторной 4</a>
                 </main>
                 <footer>
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024
