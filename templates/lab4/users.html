@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block lab %} Лабораторная работа 4: Список пользователей {% endblock %}
+
+{% block main %}
+    <h1>Список пользователей</h1>
+
+    <table>
+        <tr>
+            <th>Имя</th>
+            <th>Логин</th>
+        </tr>
+        {% for login, data in users.items() %}
+            <tr>
+                <td>{{ data.name }}</td>
+                <td>{{ login }}</td>
+                {% if login == current_user %}
+                    <td>
+                        <form action="/lab4/delete_user" method="post" style="display:inline;">
+                            <button type="submit">Удалить себя</button>
+                        </form>
+                        <a href="/lab4/edit_user">Редактировать</a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

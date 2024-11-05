@@ -105,20 +105,79 @@ def tree():
     return redirect('/lab4/tree')
 
 
-users = [
-    {'login': 'alex', 'password': '123', 'name': 'Alexander Ivanov', 'gender': 'male'},
-    {'login': 'artem', 'password': '777', 'name': 'Artem Tigranian', 'gender': 'male'},
-    {'login': 'thomas', 'password': '365', 'name': 'Thomas Johnson', 'gender': 'male'},
-    {'login': 'theodor', 'password': '321', 'name': 'Theodor White', 'gender': 'male'},
-    {'login': 'bob', 'password': '555', 'name': 'Robert Brown', 'gender': 'male'}
-]
+users_dict = {
+    'alex': {'password': '123', 'name': 'Alexander Ivanov', 'gender': 'male'},
+    'artem': {'password': '777', 'name': 'Artem Smirnov', 'gender': 'male'},
+    'thomas': {'password': '365', 'name': 'Thomas Johnson', 'gender': 'male'},
+    'theodor': {'password': '321', 'name': 'Theodor White', 'gender': 'male'},
+    'bob': {'password': '555', 'name': 'Robert Brown', 'gender': 'male'}
+}
+
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        login = request.form.get('login')
+        password = request.form.get('password')
+        name = request.form.get('name')
+        
+        if not login or not password or not name:
+            error = 'Все поля обязательны для заполнения'
+            return render_template('lab4/register.html', error=error)
+
+        if login in users_dict:
+            error = 'Пользователь с таким логином уже существует'
+            return render_template('lab4/register.html', error=error)
+
+        users_dict[login] = {'password': password, 'name': name}
+        return redirect('/lab4/login')
+
+    return render_template('lab4/register.html')
+
+@lab4.route('/lab4/users')
+def users():
+    if 'login' not in session:
+        return redirect('/lab4/login')
+    
+    current_user = session['login']
+    return render_template('lab4/users.html', users=users_dict, current_user=current_user)
+
+
+@lab4.route('/lab4/delete_user', methods=['POST'])
+def delete_user():
+    login = session.pop('login', None)
+    if login and login in users_dict:
+        del users_dict[login]
+    return redirect('/lab4/login')
+
+@lab4.route('/lab4/edit_user', methods=['GET', 'POST'])
+def edit_user():
+    if 'login' not in session:
+        return redirect('/lab4/login')
+
+    login = session['login']
+    user = users_dict.get(login)
+
+    if request.method == 'POST':
+        new_name = request.form.get('name')
+        new_password = request.form.get('password')
+
+        if new_name:
+            user['name'] = new_name
+        if new_password:
+            user['password'] = new_password
+
+        return redirect('/lab4/users')
+
+    return render_template('lab4/edit_user.html', user=user)
+
 
 @lab4.route('/lab4/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         if 'login' in session:
             authorized = True
-            user = next((user for user in users if user['login'] == session['login']), None)
+            login = session['login']
+            user = users_dict.get(login)
             name = user['name'] if user else ''
         else:
             authorized = False
@@ -128,6 +187,7 @@ def login():
     login = request.form.get('login')
     password = request.form.get('password')
     
+    # Проверка на пустое значение логина и пароля
     if not login:
         error = 'Не введён логин'
         return render_template('lab4/login.html', error=error, authorized=False, login=login)
@@ -135,10 +195,11 @@ def login():
         error = 'Не введён пароль'
         return render_template('lab4/login.html', error=error, authorized=False, login=login)
 
-    for user in users:
-        if login == user['login'] and password == user['password']:
-            session['login'] = login
-            return redirect('/lab4/login')
+    # Проверка логина и пароля
+    user = users_dict.get(login)
+    if user and user['password'] == password:
+        session['login'] = login
+        return redirect('/lab4/login')
 
     error = 'Неверные логин и/или пароль'
     return render_template('lab4/login.html', error=error, authorized=False, login=login)
