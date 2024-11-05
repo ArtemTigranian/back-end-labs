@@ -81,8 +81,9 @@ def exp():
     return render_template('lab4/exp.html', x1=x1, x2=x2, result=result)
 
 tree_count = 0
+max_trees = 10 
 
-@lab4.route('/lab4/tree', methods=['GET', 'POST '])
+@lab4.route('/lab4/tree', methods=['GET', 'POST'])
 def tree():
     global tree_count
     if request.method == 'GET':
@@ -90,9 +91,9 @@ def tree():
     
     operation = request.form.get('operation')
 
-    if operation == 'cut':
+    if operation == 'cut' and tree_count > 0:
         tree_count -= 1
-    elif operation == 'plant':
+    elif operation == 'plant' and tree_count < max_trees:
         tree_count += 1
 
-    return redirect('/lab4/tree')   
+    return redirect('/lab4/tree')
