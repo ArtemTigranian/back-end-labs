@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block lab %} Лабораторная работа 4: Холодильник {% endblock %}
+
+{% block main %}
+    <h1>Настройка температуры холодильника</h1>
+    
+    <form method="post">
+        <div>
+            <label for="temperature">Температура (°С):</label>
+            <input type="text" id="temperature" name="temperature" value="{{ temperature }}">
+        </div>
+        <div>
+            <button type="submit">Установить температуру</button>
+        </div>
+    </form>
+
+    {% if message %}
+        <div style="margin-top: 10px; color:red;">
+            <strong>{{ message }}</strong>
+        </div>
+    {% endif %}
+
+    {% if snowflakes %}
+        <div style="color: blue; font-size: 24px; margin-top: 10px;">
+            {% for i in range(snowflakes) %}
+                ❄️
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
