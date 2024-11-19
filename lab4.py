@@ -107,7 +107,7 @@ def tree():
 
 users_dict = {
     'alex': {'password': '123', 'name': 'Alexander Ivanov', 'gender': 'male'},
-    'artem': {'password': '777', 'name': 'Artem Smirnov', 'gender': 'male'},
+    'artem': {'password': '777', 'name': 'Artem Tigranian', 'gender': 'male'},
     'thomas': {'password': '365', 'name': 'Thomas Johnson', 'gender': 'male'},
     'theodor': {'password': '321', 'name': 'Theodor White', 'gender': 'male'},
     'bob': {'password': '555', 'name': 'Robert Brown', 'gender': 'male'}
@@ -187,7 +187,6 @@ def login():
     login = request.form.get('login')
     password = request.form.get('password')
     
-    # Проверка на пустое значение логина и пароля
     if not login:
         error = 'Не введён логин'
         return render_template('lab4/login.html', error=error, authorized=False, login=login)
@@ -195,7 +194,6 @@ def login():
         error = 'Не введён пароль'
         return render_template('lab4/login.html', error=error, authorized=False, login=login)
 
-    # Проверка логина и пароля
     user = users_dict.get(login)
     if user and user['password'] == password:
         session['login'] = login
