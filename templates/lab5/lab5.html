@@ -6,7 +6,11 @@
 {# основной контент: #}
 {% block main %}
     <h1>База знаний</h1>
-    <div>{{ name }}</div>
+    {% if login %}
+        <div>Привет, {{ login }}!</div>
+    {% else %}
+        <div>Вы еще не вошли в аккаунт!</div>
+    {% endif %}
     <ol>
         <li><a href="/lab5/login">Вход</a></li>
         <li><a href="/lab5/register">Регистрация</a></li>
