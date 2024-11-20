@@ -115,6 +115,8 @@ def create():
 
     title = request.form.get('title')
     article_text = request.form.get('article_text')
+    is_favorite = request.form.get('is_favorite') == 'on'  # Чекбокс: True, если выбран
+    is_public = request.form.get('is_public') == 'on'      # Чекбокс: True, если выбран
 
     if not title or not article_text:
         return render_template('lab5/create_article.html', error="Заголовок и текст статьи не могут быть пустыми!")
@@ -129,9 +131,15 @@ def create():
     user_id = cur.fetchone()['id']
 
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", (user_id, title, article_text))
+        cur.execute("""
+            INSERT INTO articles(user_id, title, article_text, is_favorite, is_public) 
+            VALUES (%s, %s, %s, %s, %s);
+        """, (user_id, title, article_text, is_favorite, is_public))
     else:
-        cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (?, ?, ?);", (user_id, title, article_text))
+        cur.execute("""
+            INSERT INTO articles(user_id, title, article_text, is_favorite, is_public) 
+            VALUES (?, ?, ?, ?, ?);
+        """, (user_id, title, article_text, is_favorite, is_public))
 
     db_close(conn, cur)
     return redirect('/lab5')
@@ -151,19 +159,30 @@ def list():
     
     user_id = cur.fetchone()['id']
 
+    # Извлекаем статьи, сортируя любимые статьи первыми
     if current_app.config['DB_TYPE'] == 'postgres':
-        cur.execute("SELECT * FROM articles WHERE user_id=%s;", (user_id, ))
+        cur.execute("""
+            SELECT * FROM articles 
+            WHERE user_id=%s 
+            ORDER BY is_favorite DESC, id DESC;
+        """, (user_id,))
     else:
-        cur.execute("SELECT * FROM articles WHERE user_id=?;", (user_id, ))
+        cur.execute("""
+            SELECT * FROM articles 
+            WHERE user_id=? 
+            ORDER BY is_favorite DESC, id DESC;
+        """, (user_id,))
     
     articles = cur.fetchall()
 
     db_close(conn, cur)
 
     if not articles:
-        return render_template('/lab5/articles.html', error="У вас пока нет ни одной статьи.")
+        return render_template('lab5/articles.html', error="У вас пока нет ни одной статьи.")
     
-    return render_template('/lab5/articles.html', articles=articles)
+    return render_template('lab5/articles.html', articles=articles)
+
+
 
 
 @lab5.route('/lab5/logout')
@@ -187,13 +206,12 @@ def edit(article_id):
         cur.execute("SELECT * FROM articles WHERE id=?;", (article_id,))
     
     article = cur.fetchone()
-    if not article:
-        db_close(conn, cur)
-        return "Статья не найдена", 404
 
     if request.method == 'POST':
         title = request.form.get('title')
         article_text = request.form.get('article_text')
+        is_favorite = request.form.get('is_favorite') == 'on'  # Чекбокс: True, если выбран
+        is_public = request.form.get('is_public') == 'on'      # Чекбокс: True, если выбран
 
         # Валидация: заголовок и текст не могут быть пустыми
         if not title.strip() or not article_text.strip():
@@ -201,9 +219,17 @@ def edit(article_id):
 
         # Обновляем статью в базе данных
         if current_app.config['DB_TYPE'] == 'postgres':
-            cur.execute("UPDATE articles SET title=%s, article_text=%s WHERE id=%s;", (title, article_text, article_id))
+            cur.execute("""
+                UPDATE articles 
+                SET title=%s, article_text=%s, is_favorite=%s, is_public=%s 
+                WHERE id=%s;
+            """, (title, article_text, is_favorite, is_public, article_id))
         else:
-            cur.execute("UPDATE articles SET title=?, article_text=? WHERE id=?;", (title, article_text, article_id))
+            cur.execute("""
+                UPDATE articles 
+                SET title=?, article_text=?, is_favorite=?, is_public=? 
+                WHERE id=?;
+            """, (title, article_text, is_favorite, is_public, article_id))
         
         db_close(conn, cur)
         return redirect('/lab5/list')
@@ -234,3 +260,44 @@ def delete(article_id):
 
     db_close(conn, cur)
     return redirect('/lab5/list')
+
+
+@lab5.route('/lab5/users')
+def users():
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+    
+    conn, cur = db_connect()
+
+    # Получаем список всех пользователей (только логины)
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT login FROM users;")
+    else:
+        cur.execute("SELECT login FROM users;")
+    
+    users = cur.fetchall()
+
+    db_close(conn, cur)
+
+    return render_template('lab5/users.html', users=users)
+
+
+@lab5.route('/lab5/public_articles')
+def public_articles():
+    conn, cur = db_connect()
+
+    # Извлекаем все публичные статьи
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM articles WHERE is_public=True ORDER BY id DESC;")
+    else:
+        cur.execute("SELECT * FROM articles WHERE is_public=1 ORDER BY id DESC;")
+    
+    articles = cur.fetchall()
+
+    db_close(conn, cur)
+
+    if not articles:
+        return render_template('/lab5/public_articles.html', error="Публичных статей пока нет.")
+    
+    return render_template('/lab5/public_articles.html', articles=articles)

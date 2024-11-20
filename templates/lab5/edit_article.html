@@ -18,6 +18,16 @@
         <label for="article_text">Текст статьи:</label><br>
         <textarea id="article_text" name="article_text" required>{{ article['article_text'] }}</textarea><br><br>
 
+        <label>
+            <input type="checkbox" name="is_favorite" {% if article['is_favorite'] %}checked{% endif %}> 
+            Любимая статья<br>
+        </label>
+
+        <label>
+            <input type="checkbox" name="is_public" {% if article['is_public'] %}checked{% endif %}> 
+            Публичная статья<br>
+        </label>
+
         <button type="submit">Сохранить</button>
     </form>
 {% endblock %}  
