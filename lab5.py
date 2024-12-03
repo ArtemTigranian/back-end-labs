@@ -21,6 +21,7 @@ def db_connect():
             password = 'artem'
         )
         cur = conn.cursor(cursor_factory = RealDictCursor)
+
     else:
         dir_path = path.dirname(path.realpath(__file__))
         db_path = path.join(dir_path, "database.db")
@@ -142,7 +143,7 @@ def create():
         """, (user_id, title, article_text, is_favorite, is_public))
 
     db_close(conn, cur)
-    return redirect('/lab5')
+    return redirect('/lab5/list')
 
 @lab5.route('/lab5/list')
 def list():
