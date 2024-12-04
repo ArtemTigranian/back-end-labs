@@ -18,33 +18,63 @@
             body: JSON.stringify(json)
         })
         .then(function(response) {
-            return response.json()
+            return response.json();
         })
         .then(function(data) {
             const office_list = data.result;
             const ul = document.getElementById('office-list');
             ul.innerHTML = ''; // Очищаем список перед рендерингом
+
             for (let i = 0; i < office_list.length; i++) {
                 const office = office_list[i];
                 const li = document.createElement('li');
-                li.innerText = `${office.number}: ${office.tenant || 'свободен'}`;
-                
+                li.innerText = `Офис ${office.number}: ${office.tenant || 'свободен'}, цена аренды: ${office.price} руб.`;
+
                 const bookingButton = document.createElement('button');
                 bookingButton.innerText = 'зарезервировать';
                 bookingButton.onclick = function() { booking(office.number); };
-                
+
                 const cancellationButton = document.createElement('button');
                 cancellationButton.innerText = 'освободить';
                 cancellationButton.onclick = function() { cancellation(office.number); };
-                
+
                 if (office.tenant) {
                     li.appendChild(cancellationButton);  // Кнопка "освободить" только если офис арендован
                 } else {
                     li.appendChild(bookingButton);
                 }
-                
-                li.appendChild(bookingButton);
+
                 ul.appendChild(li);
+            }
+
+            getUserRentalSummary();
+        });
+    }
+
+    function getUserRentalSummary() {
+        const url = '/lab6/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'user-rent-summary',
+            'id': Math.round(Math.random() * 1000)
+        };
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(json)
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            const user_rentals = data.result;
+            const summaryDiv = document.getElementById('user-rental-summary');
+            summaryDiv.innerHTML = '<h3>Стоимость аренды по пользователям:</h3>';
+            
+            for (const user in user_rentals) {
+                const p = document.createElement('p');
+                p.innerText = `${user}: ${user_rentals[user]} руб.`;
+                summaryDiv.appendChild(p);
             }
         });
     }
@@ -54,7 +84,7 @@
         const json = {
             'jsonrpc': '2.0',
             'method': 'booking',
-            'params': officeNumber, // Параметр - номер офиса
+            'params': officeNumber,
             'id': Math.round(Math.random() * 1000)
         };
         fetch(url, {
@@ -77,20 +107,13 @@
                     case -32601:
                         alert('Странная ошибка');
                         break;
-                    default:
-                        alert('Неизвестная ошибка: ' + data.error.message);
                 }
             } else {
-                // Обновляем список офисов после успешного бронирования
                 document.getElementById('office-list').innerHTML = '';
                 getOfficeList();
             }
-        })
-        .catch(function(error) {
-            console.error('Ошибка при запросе:', error);
         });
     }
-    
 
     function cancellation(officeNumber) {
         const url = '/lab6/json-rpc-api/';
@@ -106,7 +129,7 @@
             body: JSON.stringify(json)
         })
         .then(function(response) {
-            return response.json()
+            return response.json();
         })
         .then(function(data) {
             if (data.error) {
@@ -141,4 +164,5 @@
 {% block main %}
     <h1>Список кабинетов</h1>
     <ul id="office-list"></ul>
+    <div id="user-rental-summary"></div>
 {% endblock %}

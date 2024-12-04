@@ -9,29 +9,30 @@ lab6 = Blueprint('lab6', __name__)
 
 offices = []
 for i in range(1, 11):
-    offices.append({"number": i, "tenant": ""})
+    offices.append({"number": i, "tenant": "", "price": 1000 + i*15})
 
 @lab6.route('/lab6/')
 def lab():
     return render_template('lab6/lab6.html')
 
 
-@lab6.route('/lab6/json-rpc-api/', methods = ['POST'])
+@lab6.route('/lab6/json-rpc-api/', methods=['POST'])
 def api():
     data = request.json
     id = data['id']
+
     if data['method'] == 'info':
         return {
             'jsonrpc': '2.0',
             'result': offices,
             'id': id
         }
-    
+
     login = session.get('login')
     if not login:
         return {
             'jsonrpc': '2.0',
-            'error':{
+            'error': {
                 'code': 1,
                 'message': 'Unauthorized'
             },
@@ -51,14 +52,12 @@ def api():
                         },
                         'id': id
                     }
-                # Если офис свободен, бронируем его для текущего пользователя
                 office['tenant'] = login
                 return {
                     'jsonrpc': '2.0',
                     'result': 'Booking successful',
                     'id': id
                 }
-
 
     if data['method'] == 'cancellation':
         office_number = data['params']
@@ -82,13 +81,23 @@ def api():
                         },
                         'id': id
                     }
-                # Отменяем аренду
                 office['tenant'] = ''
                 return {
                     'jsonrpc': '2.0',
                     'result': 'Cancellation successful',
                     'id': id
                 }
+
+    if data['method'] == 'user-rent-summary':
+        user_rentals = {}
+        for office in offices:
+            if office['tenant'] != '':
+                user_rentals[office['tenant']] = user_rentals.get(office['tenant'], 0) + office['price']
+        return {
+            'jsonrpc': '2.0',
+            'result': user_rentals,
+            'id': id
+        }
 
     return {
         'jsonrpc': '2.0',
