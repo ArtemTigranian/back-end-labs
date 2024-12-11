@@ -64,3 +64,17 @@ def put_film(id):
         return films[id]
     else:
         return "Нет фильма под таким индексом", 404
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    new_film = request.get_json()
+
+    required_fields = ["title", "title_ru", "year", "description"]
+    if not all(field in new_film for field in required_fields):
+        return {"error": "Missing required fields"}, 400
+
+    films.append(new_film)
+
+    new_index = len(films) - 1
+    return {"id": new_index}, 201
