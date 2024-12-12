@@ -1,80 +1,168 @@
-from flask import Blueprint, url_for, redirect, render_template, request, make_response, session, current_app
+from flask import Blueprint, render_template, request, current_app, jsonify
+from datetime import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from os import path
 
 lab7 = Blueprint('lab7', __name__)
 
+def db_connect():
+    if current_app.config['DB_TYPE'] == 'postgres':
+        conn = psycopg2.connect(
+            host = '127.0.0.1',
+            database = 'artem_tigranian_knowledge_base',
+            user = 'artem_tigranian_knowledge_base',
+            password = 'artem'
+        )
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+    else:
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+    return conn, cur
+
+
+def db_close(conn, cur):
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 @lab7.route('/lab7/')
-def main():
-    return render_template('lab7/index.html')
-
-
-films = [
-    {
-        "title": "Inglourious Basterds",
-        "title_ru": "Бесславные ублюдки",
-        "year": 2009,
-        "description": "Вторая мировая война. В оккупированной немцами Франции группа американских солдат-евреев наводит страх на нацистов, жестоко убивая и скальпируя солдат."
-    },
-    {
-        "title": "Django Unchained",
-        "title_ru": "Джанго освобожденный",
-        "year": 2012,
-        "description": "Шульц — эксцентричный охотник за головами, который выслеживает и отстреливает самых опасных преступников. Он освобождает раба по имени Джанго, поскольку тот может помочь ему в поисках трёх бандитов. Джанго знает этих парней в лицо, ведь у него с ними свои счёты."
-    },
-    {
-        "title": "Kill Bill: Vol. 1",
-        "title_ru": "Убить Билла",
-        "year": 2003,
-        "description": "В беременную наёмную убийцу по кличке Чёрная Мамба во время бракосочетания стреляет человек по имени Билл. Но голова у женщины оказалась крепкой — пролежав четыре года в коме, бывшая невеста приходит в себя. Она горит желанием найти предателей. Теперь только безжалостная месть успокоит сердце Чёрной Мамбы, и она начинает по очереди убивать членов банды Билла, решив оставить главаря напоследок."
-    },
-]
+def lab():
+    return render_template('lab7/lab7.html')
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films;")
+        films = cur.fetchall()
+    else:
+        cur.execute("SELECT * FROM films;")
+        films = [dict(row) for row in cur.fetchall()]
+    db_close(conn, cur)
+
     return films
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['GET'])
 def get_film(id):
-    if 0 <= id < len(films):
-        return films[id]
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films WHERE id = %s;", (id,))
+        film = cur.fetchone()
     else:
-        return "Нет фильма под таким индексом", 404
+        cur.execute("SELECT * FROM films WHERE id = ?;", (id,))
+        films = cur.fetchone()
+        return jsonify(dict(films))
+
+    db_close(conn, cur)
+
+    if film is None:
+        return {"error": "Film not found"}, 404
+
+    return film
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['DELETE'])
 def del_film(id):
-    if 0 <= id < len(films):
-        del films[id]
-        return '', 204
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM films WHERE id = %s;", (id,))
     else:
-        return "Нет фильма под таким индексом", 404
+        cur.execute("DELETE FROM films WHERE id = ?;", (id,))
+
+    db_close(conn, cur)
+
+    if film is None:
+        return {"error": "Film not found"}, 404
+    return '', 204
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>', methods=['PUT'])
 def put_film(id):
-    if 0 <= id < len(films):
-        film = request.get_json()
-        films[id] = film
-        return films[id]
+    conn, cur = db_connect()
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films WHERE id = %s;", (id,))
+        film_in_db = cur.fetchone()
     else:
-        return "Нет фильма под таким индексом", 404
+        cur.execute("SELECT * FROM films WHERE id = ?;", (id,))
+        film_in_db = cur.lastrowid
+
+
+    if film_in_db is None:
+        db_close(conn, cur)
+        return {"error": "Film not found"}, 404
+
+    film = request.get_json()
+
+    if film.get('title_ru') == '':
+        return {'title_ru': 'Укажите русское название'}, 400
+    if film.get('year') == '':
+        return {'year': 'Укажите год'}, 400
+
+    current_year = datetime.now().year
+    year = int(film['year'])
+    if year < 1895 or year > current_year:
+        return {'year': f'Год должен быть от 1895 до {current_year}'}, 400
+
+    if film.get('description') == '':
+        return {'description': 'Заполните описание'}, 400
+
+    if len(film.get('description', '')) > 2000:
+        return {'description': 'Описание превышает 2000 символов'}, 400
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("UPDATE films SET title = %s, title_ru = %s, year = %s, description = %s WHERE id = %s;",
+                    (film['title'], film['title_ru'], film['year'], film['description'], id))
+    else:
+        cur.execute("UPDATE films SET title = ?, title_ru = ?, year = ?, description = ? WHERE id = ?;",
+                    (film['title'], film['title_ru'], film['year'], film['description'], id))
+
+    db_close(conn, cur)
+    return film
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['POST'])
 def add_film():
-    new_film = request.get_json()
+    conn, cur = db_connect()
+    film = request.get_json()
 
-    required_fields = ["title", "title_ru", "year", "description"]
-    if not all(field in new_film for field in required_fields):
-        return {"error": "Missing required fields"}, 400
+    if film.get('title') == '' and film.get('title_ru') == '':
+        return {'title': 'Укажите оригинальное название'}, 400
+    if film.get('title_ru') == '':
+        return {'title_ru': 'Укажите русское название'}, 400
+    if film.get('year') == '':
+        return {'year': 'Укажите год'}, 400
 
-    films.append(new_film)
+    current_year = datetime.now().year
+    year = int(film['year'])
+    if year < 1895 or year > current_year:
+        return {'year': f'Год должен быть от 1895 до {current_year}'}, 400
 
-    new_index = len(films) - 1
-    return {"id": new_index}, 201
+    if len(film.get('description', '')) > 2000:
+        return {'description': 'Описание превышает 2000 символов'}, 400
+
+    if film.get('description') == '':
+        return {'description': 'Заполните описание'}, 400
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("INSERT INTO films (title, title_ru, year, description) VALUES (%s, %s, %s, %s) RETURNING id;",
+                    (film['title'], film['title_ru'], film['year'], film['description']))
+    else:
+        cur.execute("INSERT INTO films (title, title_ru, year, description) VALUES (?, ?, ?, ?);",
+                    (film['title'], film['title_ru'], film['year'], film['description']))
+
+    db_close(conn, cur)
+
+    return ''
