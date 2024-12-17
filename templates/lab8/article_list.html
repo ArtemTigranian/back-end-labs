@@ -3,22 +3,46 @@
 {% block lab %} Лабораторная работа 8 {% endblock %}
 
 {% block main %}
+    <style>
+        .text{
+            background-color: aliceblue;
+            border: 2px black solid;
+            margin-bottom: 20px;
+            width: 600px;
+            height: 200px;
+            padding: 10px;
+            display: inline-block;
+            margin-right: 50px;
+            margin-left: 30px;
+            border-radius: 10px;
+        }
+        .knopki{
+            margin-top: 40px;
+            display: inline-block;
+        }
+    </style>
     <h1>Список статей</h1>
-
+    👥 - <b>Публичная</b> статья <br>
+    ⭐️ - <b>Избранная</b> статья
     {% if articly %}
         <ul>
             {% for article in articly %}
-                <li>
-                    <strong>{{ article.title }}</strong> ({{ article.created_at }})
+                <div class="text">
+                    <b>{{ article.title }}</b>
                     <p>{{ article.article_text }}</p>
-                    <p>Избранная: {{ article.is_favorite }}</p>
-                    <p>Публичная: {{ article.is_public }}</p>
-                    <a href="/lab8/articles/edit/{{ article.id }}">Редактировать</a>
 
-                    <form action="/lab8/articles/delete/{{ article.id }}" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту статью?')">Удалить</button>
-                    </form>
-                </li>
+                    <!-- Вывод избранной статьи (звездочка) -->
+                    {% if article.is_favorite %}⭐️{% endif %}
+
+                    <!-- Вывод публичной статьи (слово "публичная") -->
+                    {% if article.is_public %}👥{% endif %} <br>
+                    <div class="knopki">
+                        {% if current_user.is_authenticated %}
+                        <a href="/lab8/articles/edit/{{ article.id }}">Редактировать</a>
+                        <a href="/lab8/articles/delete/{{ article.id }}">Удалить</a>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
         </ul>
     {% else %}

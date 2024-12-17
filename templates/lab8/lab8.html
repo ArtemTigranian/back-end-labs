@@ -11,11 +11,21 @@
     {% else %}
         <div>Вы еще не вошли в аккаунт!</div>
     {% endif %}
+
+    <form action="/lab8/search/" method="POST">
+        <label>
+            Поиск по статьям:
+            <input type="text" name="query" placeholder="Введите строку для поиска" required>
+        </label>
+        <button type="submit">Найти</button>
+    </form>
+
     <ol>
         <li><a href="/lab8/login">Вход</a></li>
         <li><a href="/lab8/register">Регистрация</a></li>
         <li><a href="/lab8/articles">Список статей</a></li>
         <li><a href="/lab8/create">Создать статью</a></li>
+        <li><a href="/lab8/public_articles">Публичные статьи</a></li>
         <li><a href="/lab8/logout">Выход</a></li>
     </ol>
 {% endblock %}  

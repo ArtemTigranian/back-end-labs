@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block lab %} Лабораторная работа 8 {% endblock %}
+
+{% block main %}
+<style>
+    .text{
+        background-color: aliceblue;
+        border: 2px black solid;
+        margin-bottom: 20px;
+        width: 600px;
+        height: 200px;
+        padding: 10px;
+        display: inline-block;
+        margin-right: 50px;
+        margin-left: 30px;
+        border-radius: 10px;
+    }
+    .knopki{
+        margin-top: 40px;
+        display: inline-block;
+    }
+</style>
+    <h1>Результаты поиска</h1>
+    👥 - <b>Публичная</b> статья <br>
+    ⭐️ - <b>Избранная</b> статья
+    {% if query %}
+        <p>Результаты поиска по запросу: <strong>{{ query }}</strong></p>
+    {% endif %}
+    
+    {% if search_results %}
+        <ul>
+            {% for article in search_results %}
+                <div class="text">
+                    <b>{{ article.title }}</b>
+                    <p>{{ article.article_text }}</p>
+
+                    <!-- Вывод избранной статьи (звездочка) -->
+                    {% if article.is_favorite %}⭐️{% endif %}
+
+                    <!-- Вывод публичной статьи (слово "публичная") -->
+                    {% if article.is_public %}👥{% endif %} <br>
+                </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>По вашему запросу ничего не найдено.</p>
+    {% endif %}
+{% endblock %}

@@ -69,9 +69,9 @@ def login():
 
 
 @lab8.route('/lab8/logout/')
-@login_required
+# @login_required
 def logout():
-    session.pop('login', None)
+    # session.pop('login', None)
     logout_user()
     return redirect('/lab8/')
 
@@ -171,3 +171,38 @@ def delete_article(article_id):
     return redirect('/lab8/articles/')
 
 
+@lab8.route('/lab8/public_articles/')
+def public_articles():
+    # Получаем все публичные статьи
+    public_articles = articles.query.filter_by(is_public=True).all()
+
+    # Отображаем их в шаблоне
+    return render_template('lab8/public_articles.html', public_articles=public_articles)
+
+
+@lab8.route('/lab8/search/', methods=['GET', 'POST'])
+def search_articles():
+    query = request.form.get('query')  # Получаем поисковый запрос из формы
+
+    # Если запрос не пустой, ищем статьи
+    if query:
+        # Если пользователь авторизован
+        if current_user.is_authenticated:
+            # Ищем статьи, которые являются либо публичными, либо принадлежат текущему пользователю
+            search_results = articles.query.filter(
+                ((articles.title.ilike(f'%{query}%')) |  # Ищем в заголовке
+                 (articles.article_text.ilike(f'%{query}%'))) &  # Ищем в тексте статьи
+                ((articles.is_public == True) | (articles.login_id == current_user.id))  # Либо публичные, либо свои статьи
+            ).all()
+        else:
+            # Если пользователь не авторизован, ищем только публичные статьи
+            search_results = articles.query.filter(
+                (articles.title.ilike(f'%{query}%')) |  # Ищем в заголовке
+                (articles.article_text.ilike(f'%{query}%'))  # Ищем в тексте статьи
+                & (articles.is_public == True)  # Ищем только публичные статьи
+            ).all()
+
+        return render_template('lab8/search_results.html', search_results=search_results, query=query)
+
+    # Если запрос пустой, просто возвращаем пустую страницу поиска
+    return render_template('lab8/search_results.html', search_results=None, query=None)
