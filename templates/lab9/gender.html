@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %} Ввод пола {% endblock %}
+
+{% block main %}
+    <style>
+        img{
+            height: 400px;
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='/lab9/main9.css')}}">
+    <h1>❄️Укажите ваш пол❄️</h1>
+    <form method="POST">
+        <input type="radio" name="gender" value="мужчина" required> Мужчина
+        <input type="radio" name="gender" value="женщина" required> Женщина
+        <button type="submit">Далее</button>
+    </form>
+    <img src="{{ url_for('static', filename='/lab9/santa.png') }}">
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %} Вопрос о предпочтениях {% endblock %}
+
+{% block main %}
+    <style>
+        img{
+            height: 400px;
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='/lab9/main9.css')}}">
+    <h1>❄️Вы любите что-то дорогое или что-то милое?❄️</h1>
+    <form method="POST">
+        <input type="radio" name="preference" value="дорогое" required> Дорогое💵
+        <input type="radio" name="preference" value="милое" required> Милое🥰 <br>
+        <button type="submit">Далее</button>
+    </form>
+    <img src="{{ url_for('static', filename='/lab9/box.png') }}">
+{% endblock %}

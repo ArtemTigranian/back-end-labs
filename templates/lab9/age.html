@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block lab %} Лабораторная работа 9 {% endblock %}
-    
+{% block lab %} Ввод возраста {% endblock %}
+
 {% block main %}
     <style>
         img{
@@ -10,10 +10,10 @@
         }
     </style>
     <link rel="stylesheet" href="{{url_for('static', filename='/lab9/main9.css')}}">
-    <h1>❄️Введите ваше имя❄️</h1>
+    <h1>❄️Введите ваш возраст❄️</h1>
     <form method="POST">
-        <input type="text" name="name" required placeholder="Ваше имя">
+        <input type="number" name="age" required placeholder="Ваш возраст">
         <button type="submit">Далее</button>
     </form>
-    <img src="{{ url_for('static', filename='/lab9/tree.png') }}">
+    <img src="{{ url_for('static', filename='/lab9/toy.png') }}">
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block lab %} Поздравление 🎄 {% endblock %}
+    
+{% block main %}
+    <style>
+        .message{
+            width: 600px;
+            text-align: center;
+            margin: auto;
+            border: #303a43 solid 6px;
+            border-radius: 20px;
+            padding: 5px;
+            margin-bottom: 20px;
+            background-color: #303a43;
+            color: white;
+        }
+        img{
+            height: 300px;
+        }
+    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='/lab9/main9.css')}}">
+    <h1>☃️Поздравляем, {{ name }}!☃️</h1>
+    <div class="message">
+        {{ message }}🎉🎄🎅
+    </div>
+    <img src="{{ url_for('static', filename='/lab9/' + image) }}">
+{% endblock %}

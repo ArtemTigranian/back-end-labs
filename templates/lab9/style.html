@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block lab %} Вопрос о стиле {% endblock %}
+
+{% block main %}
+    <style>
+        img{
+            height: 320px;
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='/lab9/main9.css')}}">
+    <h1>❄️Вам нравится больше что-то Красивое или Функциональное?❄️</h1>
+    <form method="POST">
+        <input type="radio" name="style" value="красивое" required> Красивое😍
+        <input type="radio" name="style" value="функциональное" required> Функциональное💻 <br>
+        <button type="submit">Далее</button>
+    </form>
+    <img src="{{ url_for('static', filename='/lab9/box.png') }}">
+{% endblock %}
