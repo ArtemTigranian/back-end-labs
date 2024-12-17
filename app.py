@@ -8,6 +8,7 @@ from lab4 import lab4
 from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
+from lab8 import lab8
 
 app = Flask(__name__)
 
@@ -21,6 +22,7 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
+app.register_blueprint(lab8)
 
 
 @app.route("/")
@@ -44,6 +46,7 @@ def start():
                     <a href="/lab5">Меню Лабораторной 5</a><br>
                     <a href="/lab6">Меню Лабораторной 6</a><br>
                     <a href="/lab7">Меню Лабораторной 7</a><br>
+                    <a href="/lab8">Меню Лабораторной 8</a><br>
                 </main>
                 <footer>
                     &copy; Артём Тигранян, ФБИ-21, 3 курс, 2024

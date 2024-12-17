@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Лабораторная работа 5 {% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <h1>База знаний</h1>
+    {% if login %}
+        <div>Привет, {{ login }}!</div>
+    {% else %}
+        <div>Вы еще не вошли в аккаунт!</div>
+    {% endif %}
+    <ol>
+        <li><a href="/lab8/login">Вход</a></li>
+        <li><a href="/lab8/register">Регистрация</a></li>
+        <li><a href="/lab8/list">Список статей</a></li>
+        <li><a href="/lab8/create">Создать статью</a></li>
+    </ol>
+{% endblock %}  
