@@ -6,8 +6,8 @@
 {# основной контент: #}
 {% block main %}
     <h1>База знаний</h1>
-    {% if login %}
-        <div>Привет, {{ login }}!</div>
+    {% if current_user.is_authenticated %}
+        <div>Привет, {{ current_user.login }}!</div>
     {% else %}
         <div>Вы еще не вошли в аккаунт!</div>
     {% endif %}
@@ -16,5 +16,6 @@
         <li><a href="/lab8/register">Регистрация</a></li>
         <li><a href="/lab8/list">Список статей</a></li>
         <li><a href="/lab8/create">Создать статью</a></li>
+        <li><a href="/lab8/logout">Выход</a></li>
     </ol>
 {% endblock %}  
