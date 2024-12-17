@@ -24,5 +24,6 @@
     <div class="message">
         {{ message }}🎉🎄🎅
     </div>
-    <img src="{{ url_for('static', filename='/lab9/' + image) }}">
+    <img src="{{ url_for('static', filename='/lab9/' + image) }}"> <br>
+    <a href="{{ url_for('lab9.reset') }}">Сбросить данные</a>
 {% endblock %}

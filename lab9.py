@@ -1,78 +1,85 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 
 lab9 = Blueprint('lab9', __name__)
 
-# Страница 1: Ввод имени
 @lab9.route('/lab9/', methods=['GET', 'POST'])
 def lab():
+    if 'name' in session:
+        return redirect(url_for('lab9.congratulations'))
+    
     if request.method == 'POST':
-        name = request.form['name']
-        return redirect(url_for('lab9.age', name=name))
+        session['name'] = request.form['name']
+        return redirect(url_for('lab9.age'))
+    
     return render_template('lab9/lab9.html')
 
-# Страница 2: Ввод возраста
 @lab9.route('/lab9/age', methods=['GET', 'POST'])
 def age():
-    name = request.args.get('name')
+    if 'name' not in session:
+        return redirect(url_for('lab9.lab'))
+    
     if request.method == 'POST':
-        age = int(request.form['age'])
-        return redirect(url_for('lab9.gender', name=name, age=age))
-    return render_template('lab9/age.html', name=name)
+        session['age'] = int(request.form['age'])
+        return redirect(url_for('lab9.gender'))
+    
+    return render_template('lab9/age.html')
 
-# Страница 3: Ввод пола
 @lab9.route('/lab9/gender', methods=['GET', 'POST'])
 def gender():
-    name = request.args.get('name')
-    age = request.args.get('age')
+    if 'name' not in session or 'age' not in session:
+        return redirect(url_for('lab9.lab'))
+    
     if request.method == 'POST':
-        gender = request.form['gender']
-        return redirect(url_for('lab9.preference', name=name, age=age, gender=gender))
-    return render_template('lab9/gender.html', name=name, age=age)
+        session['gender'] = request.form['gender']
+        return redirect(url_for('lab9.preference'))
+    
+    return render_template('lab9/gender.html')
 
-# Страница 4: Выбор предпочтений
 @lab9.route('/lab9/preference', methods=['GET', 'POST'])
 def preference():
-    name = request.args.get('name')
-    age = int(request.args.get('age'))
-    gender = request.args.get('gender')
+    if 'name' not in session or 'age' not in session or 'gender' not in session:
+        return redirect(url_for('lab9.lab'))
+    
     if request.method == 'POST':
-        preference = request.form['preference']
-        return redirect(url_for('lab9.style', name=name, age=age, gender=gender, preference=preference))
-    return render_template('lab9/preference.html', name=name, age=age, gender=gender)
+        session['preference'] = request.form['preference']
+        return redirect(url_for('lab9.style'))
+    
+    return render_template('lab9/preference.html')
 
-# Страница 5: Красивое или функциональное
 @lab9.route('/lab9/style', methods=['GET', 'POST'])
 def style():
-    name = request.args.get('name')
-    age = int(request.args.get('age'))
-    gender = request.args.get('gender')
-    preference = request.args.get('preference')
+    if 'name' not in session or 'age' not in session or 'gender' not in session or 'preference' not in session:
+        return redirect(url_for('lab9.lab'))
+    
     if request.method == 'POST':
-        style = request.form['style']
-        return redirect(url_for('lab9.congratulations', name=name, age=age, gender=gender, preference=preference, style=style))
-    return render_template('lab9/style.html', name=name, age=age, gender=gender, preference=preference)
+        session['style'] = request.form['style']
+        return redirect(url_for('lab9.congratulations'))
+    
+    return render_template('lab9/style.html')
 
 @lab9.route('/lab9/congratulations', methods=['GET'])
 def congratulations():
-    name = request.args.get('name')
-    age = int(request.args.get('age'))
-    gender = request.args.get('gender')
-    preference = request.args.get('preference')
-    style = request.args.get('style')
-
-    # Логика выбора подарка
+    if 'name' not in session or 'age' not in session or 'gender' not in session or 'preference' not in session or 'style' not in session:
+        return redirect(url_for('lab9.lab'))
+    
+    name = session['name']
+    age = session['age']
+    gender = session['gender']
+    preference = session['preference']
+    style = session['style']
+    
     if age <= 12:
         if preference == 'дорогое' and style == 'красивое':
             gift = 'Футбольная форма Роналдо' if gender == 'мужчина' else 'Платье'
-            image = 'football_jersey.png' if gender == 'мужчина' else 'dress.png'
+            image = 'football_jersey.jpg' if gender == 'мужчина' else 'dress.jpg'
         elif preference == 'дорогое' and style == 'функциональное':
             gift = 'Машинка на пульте управления' if gender == 'мужчина' else 'Айфон'
             image = 'remote_car.jpg' if gender == 'мужчина' else 'iphone.jpg'
         elif preference == 'милое' and style == 'красивое':
-            gift = 'Новогодний свитер'
+            gift = 'Новогодний свитер' if gender == 'мужчина' else 'Новогодний'
             image = 'sweater.jpg'
         elif preference == 'милое' and style == 'функциональное':
-            gift = 'Санки'
+            gift = 'Санки' if gender == 'мужчина' else 'Санки'
             image = 'sled.jpg'
     else:
         if preference == 'дорогое' and style == 'красивое':
@@ -82,13 +89,12 @@ def congratulations():
             gift = 'Плейстейшн 5' if gender == 'мужчина' else 'Фен Дайсон'
             image = 'ps5.jpg' if gender == 'мужчина' else 'dyson_dryer.jpg'
         elif preference == 'милое' and style == 'красивое':
-            gift = 'Новогодний свитер'
-            image = 'sweater.jpg'
+            gift = 'Новогодний свитер' if gender == 'мужчина' else 'Новогодний свитер'
+            image = 'mens_sweater.jpg' if gender == 'мужчина' else 'womens_sweater.jpg'
         elif preference == 'милое' and style == 'функциональное':
             gift = 'Новогодняя книга'
             image = 'new_year_book.jpg'
 
-    # Поздравления для каждой категории
     if age <= 12:
         if gender == 'мужчина':
             message = f"Поздравляю тебя, {name}! Пусть твои мечты сбудутся, а впереди будет много побед, интересных приключений и новых достижений! Желаю, чтобы ты всегда был таким же веселым и активным! Вот тебе подарок — {gift}."
@@ -102,3 +108,7 @@ def congratulations():
 
     return render_template('lab9/congratulations.html', name=name, gift=gift, image=image, message=message)
 
+@lab9.route('/lab9/reset')
+def reset():
+    session.clear()
+    return redirect(url_for('lab9.lab'))
