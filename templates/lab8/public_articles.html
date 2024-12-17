@@ -33,10 +33,6 @@
 
                 <!-- Вывод публичной статьи (слово "публичная") -->
                 {% if article.is_public %}👥{% endif %} <br>
-
-                {% if current_user.is_authenticated %}
-                    <a href="/lab8/articles/edit/{{ article.id }}">Редактировать</a>
-                {% endif %}
                 </div>
             {% endfor %}
         </ul>
