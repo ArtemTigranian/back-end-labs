@@ -1,60 +1,7 @@
 {% extends "base2.html" %}
 
-{% block lab %}Корзина{% endblock %}
-
-{% block script %}
-<script>
-    // Функция для удаления товара из корзины
-    function removeItemFromCart(productId) {
-        const url = '/lab10/json-rpc-api/';
-        const json = {
-            'jsonrpc': '2.0',
-            'method': 'remove_from_cart',
-            'params': productId,
-            'id': Math.round(Math.random() * 1000)
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(json)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error.message);
-            } else {
-                alert(data.result);
-                location.reload(); // Перезагружаем страницу после удаления товара
-            }
-        });
-    }
-
-    // Функция для оформления покупки
-    function checkout() {
-        const url = '/lab10/json-rpc-api/';
-        const json = {
-            'jsonrpc': '2.0',
-            'method': 'checkout',
-            'id': Math.round(Math.random() * 1000)
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(json)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error.message);
-            } else {
-                alert(data.result);
-                location.href = '/lab10/thank_you'; // Перенаправляем на страницу благодарности
-            }
-        });
-    }
-</script>
+{% block lab %}
+Корзина
 {% endblock %}
 
 {% block main %}
@@ -62,16 +9,21 @@
 
 {% if cart_items %}
     <ul>
-        {% for item in cart_items %}
-            <li>
-                <strong>{{ item.title }}</strong><br>
-                {{ item.description }}<br>
-                <span>{{ item.price }} руб.</span><br>
-                <button onclick="removeItemFromCart({{ item.id }})">Удалить</button>
-            </li>
-        {% endfor %}
+    {% for item in cart_items %}
+        <li>
+            <h3>{{ item.title }}</h3>
+            <p>Цена: {{ item.price }} руб.</p>
+            <p>Количество: {{ item.quantity }}</p>
+            <form method="POST" action="/lab10/remove_from_cart">
+                <input type="hidden" name="product_id" value="{{ item.id }}">
+                <button type="submit">Удалить</button>
+            </form>
+        </li>
+    {% endfor %}
     </ul>
-    <button onclick="checkout()">Оформить покупку</button>
+    <form method="POST" action="/lab10/checkout">
+        <button type="submit">Оформить покупку</button>
+    </form>
 {% else %}
     <p>Ваша корзина пуста.</p>
 {% endif %}

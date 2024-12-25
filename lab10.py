@@ -1,25 +1,23 @@
-from flask import Blueprint, url_for, redirect, render_template, request, make_response, session, current_app
+from flask import Blueprint, url_for, redirect, render_template, request, make_response, session, current_app, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from os import path
-from db import db
-from db.models import users, articles
-from flask_login import login_user, login_required, current_user, logout_user
+
 lab10 = Blueprint('lab10', __name__)
 
-# Функции для работы с базой данных
+
 def db_connect():
-    """Подключение к базе данных (PostgreSQL или SQLite)"""
     if current_app.config['DB_TYPE'] == 'postgres':
         conn = psycopg2.connect(
-            host='127.0.0.1',
-            database='artem_tigranian_knowledge_base',
-            user='artem_tigranian_knowledge_base',
-            password='artem'
+            host = '127.0.0.1',
+            database = 'artem_tigranian_knowledge_base',
+            user = 'artem_tigranian_knowledge_base',
+            password = 'artem'
         )
-        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur = conn.cursor(cursor_factory = RealDictCursor)
+
     else:
         dir_path = path.dirname(path.realpath(__file__))
         db_path = path.join(dir_path, "database.db")
@@ -30,118 +28,18 @@ def db_connect():
     return conn, cur
 
 def db_close(conn, cur):
-    """Закрытие соединения с базой данных"""
     conn.commit()
     cur.close()
     conn.close()
 
-# Статичные данные для каталога товаров (вместо базы данных для простоты)
-products = [
-    {"id": 1, "title": "Стул", "description": "Удобный стул для офиса", "price": 1000},
-    {"id": 2, "title": "Стол", "description": "Стол для рабочего места", "price": 2000},
-    {"id": 3, "title": "Диван", "description": "Мягкий диван для дома", "price": 5000},
-    {"id": 4, "title": "Шкаф", "description": "Шкаф для одежды", "price": 3000}
-]
-
-cart = []  # Корзина покупок (будет храниться в сессии)
-
-# Роуты для работы с продуктами и корзиной
 
 @lab10.route('/lab10/')
 def lab():
     return render_template('lab10/index.html', login=session.get('login'))
 
 
-@lab10.route('/lab10/json-rpc-api/', methods=['POST'])
-def api():
-    """API JSON-RPC для работы с товарами и корзиной"""
-    data = request.json
-    id = data['id']
-
-    # Получение каталога товаров
-    if data['method'] == 'get_catalog':
-        return {
-            'jsonrpc': '2.0',
-            'result': products,
-            'id': id
-        }
-
-    # Проверка авторизации пользователя
-    login = session.get('login')
-    if not login:
-        return {
-            'jsonrpc': '2.0',
-            'error': {
-                'code': 1,
-                'message': 'Unauthorized'
-            },
-            'id': id
-        }
-
-    # Добавление товара в корзину
-    if data['method'] == 'add_to_cart':
-        product_id = data['params']
-        for product in products:
-            if product['id'] == product_id:
-                # Добавляем товар в корзину
-                cart.append(product)
-                return {
-                    'jsonrpc': '2.0',
-                    'result': f'Товар {product_id} добавлен в корзину.',
-                    'id': id
-                }
-        return {
-            'jsonrpc': '2.0',
-            'error': {
-                'code': 2,
-                'message': 'Product not found'
-            },
-            'id': id
-        }
-
-    # Удаление товара из корзины
-    if data['method'] == 'remove_from_cart':
-        product_id = data['params']
-        global cart
-        cart = [item for item in cart if item['id'] != product_id]  # Удаляем товар с данным ID из корзины
-        return {
-            'jsonrpc': '2.0',
-            'result': f'Товар {product_id} удален из корзины.',
-            'id': id
-        }
-
-    # Получение товаров из корзины
-    if data['method'] == 'get_cart':
-        return {
-            'jsonrpc': '2.0',
-            'result': cart,
-            'id': id
-        }
-
-    # Оформление покупки
-    if data['method'] == 'checkout':
-        total_price = sum(item['price'] for item in cart)
-        cart.clear()  # Очищаем корзину после оформления
-        return {
-            'jsonrpc': '2.0',
-            'result': f'Checkout successful. Total: {total_price} руб.',
-            'id': id
-        }
-
-    # Если метод не найден
-    return {
-        'jsonrpc': '2.0',
-        'error': {
-            'code': -32601,
-            'message': 'Method not found'
-        },
-        'id': id
-    }
-
-
-@lab10.route('/lab10/register', methods=['GET', 'POST'])
+@lab10.route('/lab10/register', methods = ['GET', 'POST'])
 def register():
-    """Регистрация нового пользователя"""
     if request.method == 'GET':
         return render_template('lab10/register.html')
     
@@ -149,23 +47,30 @@ def register():
     password = request.form.get('password')
 
     if not login or not password:
-        return render_template('lab10/register.html', error='Заполните все поля!')
+        return render_template('lab10/register.html', error = 'Заполните все поля!')
     
     conn, cur = db_connect()
-    cur.execute("SELECT login FROM users WHERE login=%s;", (login,))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT login FROM users WHERE login=%s;", (login,))
+    else: 
+        cur.execute("SELECT login FROM users WHERE login=?;", (login,))
     if cur.fetchone():
         db_close(conn, cur)
         return render_template('lab10/register.html', error='Такой пользователь уже существует')
     
     password_hash = generate_password_hash(password)
-    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password_hash))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password_hash))
+    else: 
+        cur.execute("INSERT INTO users (login, password) VALUES (?, ?);", (login, password_hash))
+    
     db_close(conn, cur) 
     return render_template('lab10/success.html', login=login)
 
 
-@lab10.route('/lab10/login', methods=['GET', 'POST'])
+@lab10.route('/lab10/login', methods = ['GET', 'POST'])
 def login():
-    """Авторизация пользователя"""
     if request.method == 'GET':
         return render_template('lab10/login.html')
     
@@ -173,10 +78,15 @@ def login():
     password = request.form.get('password')
 
     if not login or not password:
-        return render_template('lab10/login.html', error='Заполните все поля!')
+        return render_template('lab10/register.html', error = 'Заполните все поля!')
 
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM users WHERE login=%s", (login,))
+
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE login=%s", (login, ))
+    else:
+        cur.execute("SELECT * FROM users WHERE login=?", (login, ))
+ 
     user = cur.fetchone()
 
     if not user:
@@ -184,35 +94,80 @@ def login():
         return render_template('lab10/login.html', error='Логин и/или пароль неверны')
     
     if not check_password_hash(user['password'], password):
-        db_close(conn, cur)
+        db_close(conn,cur)
         return render_template('lab10/login.html', error='Логин и/или пароль неверны')
     
     session['login'] = login
     db_close(conn, cur) 
-    return redirect('/lab10')
+    return render_template('lab10/index.html', login=login)
 
 
 @lab10.route('/lab10/logout')
 def logout():
-    """Выход из системы"""
     session.pop('login', None)
     return redirect('/lab10')
 
 
 @lab10.route('/lab10/katalog')
 def katalog():
-    # Получаем товары из базы данных
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM products")
+    cur.execute("SELECT id, title, description, price FROM products")
     products = cur.fetchall()
     db_close(conn, cur)
-    
-    return render_template('lab10/lab10.html', products=products, login=session.get('login'))
+    return render_template('lab10/katalog.html', products=products)
 
 
-@lab10.route('/lab10/cart')
-def cart():
-    # Логика для отображения корзины
-    # Например, получаем товары из корзины из сессии:
-    cart_items = session.get('cart', [])
-    return render_template('lab10/cart.html', cart_items=cart_items)
+@lab10.route('/lab10/cart', methods=['GET'])
+def view_cart():
+    if 'login' not in session:
+        return render_template('lab10/katalog.html', error='Пожалуйста, войдите в систему для добавления товаров в корзину.')
+
+    # Получаем корзину из сессии
+    cart = session.get('cart', [])
+
+    return render_template('lab10/cart.html', cart_items=cart)
+
+
+
+@lab10.route('/lab10/add_to_cart', methods=['POST'])
+def add_to_cart():
+    if 'login' not in session:
+        return render_template('lab10/katalog.html', error='Для добавления в корзину необходимо войти в систему.')
+
+    product_id = request.form.get('product_id')
+    product_title = request.form.get('product_title')
+    product_price = request.form.get('product_price')
+
+    # Проверяем, есть ли уже этот товар в корзине
+    cart = session.get('cart', [])
+    existing_product = next((item for item in cart if item['id'] == product_id), None)
+
+    if existing_product:
+        existing_product['quantity'] += 1  # Увеличиваем количество товара
+    else:
+        cart.append({'id': product_id, 'title': product_title, 'price': product_price, 'quantity': 1})
+
+    session['cart'] = cart  # Сохраняем корзину обратно в сессию
+
+    return redirect('/lab10/katalog')
+
+
+@lab10.route('/lab10/checkout', methods=['POST'])
+def checkout():
+    if 'login' not in session:
+        return render_template('lab10/katalog.html', error='Для оформления покупки необходимо войти в систему.')
+
+    # Получаем корзину из сессии
+    cart = session.get('cart', [])
+
+    if not cart:
+        return render_template('lab10/cart.html', error="Ваша корзина пуста.")
+
+    # Рассчитываем общую сумму
+    total_amount = sum(float(item['price']) * item['quantity'] for item in cart)
+
+    # Очищаем корзину после оформления
+    session.pop('cart', None)
+
+    # Перенаправляем на страницу с поздравлением
+    return render_template('lab10/thank_you.html', total_amount=total_amount)
