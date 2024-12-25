@@ -125,8 +125,9 @@ def view_cart():
     # Получаем корзину из сессии
     cart = session.get('cart', [])
 
-    return render_template('lab10/cart.html', cart_items=cart)
-
+    total_amount = sum(float(item['price']) * int(item['quantity']) for item in cart)
+    
+    return render_template('lab10/cart.html', cart_items=cart, total_amount=total_amount)
 
 
 @lab10.route('/lab10/add_to_cart', methods=['POST'])
@@ -150,6 +151,52 @@ def add_to_cart():
     session['cart'] = cart  # Сохраняем корзину обратно в сессию
 
     return redirect('/lab10/katalog')
+
+
+@lab10.route('/lab10/update_cart', methods=['POST'])
+def update_cart():
+    if 'login' not in session:
+        return render_template('lab10/katalog.html', error='Для изменения количества товара необходимо войти в систему.')
+
+    # Получаем id товара и новое количество
+    product_id = request.form.get('product_id')
+    new_quantity = int(request.form.get('quantity'))  # Преобразуем quantity в целое число
+
+    # Получаем корзину из сессии
+    cart = session.get('cart', [])
+
+    # Ищем товар в корзине и обновляем его количество
+    for item in cart:
+        if item['id'] == product_id:
+            item['quantity'] = new_quantity
+            break
+
+    # Сохраняем обновленную корзину в сессии
+    session['cart'] = cart
+
+    # Перенаправляем обратно на страницу корзины
+    return redirect('/lab10/cart')
+
+
+
+@lab10.route('/lab10/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    if 'login' not in session:
+        return render_template('lab10/katalog.html', error='Для удаления товара из корзины необходимо войти в систему.')
+
+    # Получаем id товара, который нужно удалить
+    product_id = request.form.get('product_id')
+
+    # Получаем корзину из сессии
+    cart = session.get('cart', [])
+
+    # Фильтруем корзину, чтобы удалить товар с указанным id
+    cart = [item for item in cart if item['id'] != product_id]
+
+    # Сохраняем обновленную корзину в сессии
+    session['cart'] = cart
+
+    return redirect('/lab10/cart')
 
 
 @lab10.route('/lab10/checkout', methods=['POST'])

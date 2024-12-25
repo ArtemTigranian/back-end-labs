@@ -27,9 +27,12 @@
 <h1 class="glavnaya">Главная страница</h1>
 
 <div class="menu">
-    <a href="/lab10/login"><b>Вход</b></a> <br>
-    <a href="/lab10/register"><b>Регистрация</b></a> <br>
-    <a href="/lab10/logout"><b>Выход</b></a><br>
-    <a href="/lab10/katalog"><b>Каталог товаров</b></a>
+    <a href="/lab10/katalog"><b>Каталог товаров</b></a> <br>
+    {% if login %}
+        <a href="/lab10/logout"><b>Выход</b></a><br>
+    {% else %}
+        <a href="/lab10/login"><b>Вход</b></a> <br>
+        <a href="/lab10/register"><b>Регистрация</b></a> <br>
+    {% endif %}
 </div>
 {% endblock %}

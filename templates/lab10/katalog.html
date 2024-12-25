@@ -52,7 +52,12 @@
 </style>
 
 <h1>Каталог товаров</h1>
-<div class="korzina"><a href="/lab10/cart"><b>Корзина товаров</b></a></div>
+{% if not login %}
+    <div class="korzina"><a href="/lab10/cart"><b>Перейти в 🛒</b></a></div>
+{% else %}
+    <div class="korzina">Вы еще не вошли в аккаунт!</div>
+{% endif %}
+
 
 
 <div class="product-grid">
@@ -65,7 +70,12 @@
                 <input type="hidden" name="product_id" value="{{ product.id }}">
                 <input type="hidden" name="product_title" value="{{ product.title }}">
                 <input type="hidden" name="product_price" value="{{ product.price }}">
-                <button type="submit">Добавить в корзину</button>
+                {% if not login %}
+                    <button type="submit">Добавить в корзину</button>
+                {% else %}
+                    <div>❌</div>
+                {% endif %}
+                
             </form>
         </div>
     {% endfor %}
