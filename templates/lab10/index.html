@@ -1,0 +1,46 @@
+{% extends "base2.html" %}
+
+{% block lab %}Мебель.Про{% endblock %}
+
+{% block script %}
+<script>
+    // Функция для получения приветствия и логина
+    document.addEventListener('DOMContentLoaded', function() {
+        const login = "{{ login }}";  // Получаем логин из переменной
+        const greetingDiv = document.getElementById('greeting');
+        if (login) {
+            greetingDiv.innerHTML = `Привет, ${login}!`;
+        } else {
+            greetingDiv.innerHTML = 'Вы еще не вошли в аккаунт!';
+        }
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<style>
+    .glavnaya {
+        text-align: center;
+    }
+    .menu {
+        border: 5px solid;
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+<div id="greeting" class="glavnaya"></div>
+
+<h1 class="glavnaya">Главная страница</h1>
+
+<div class="menu">
+    {% if login %}
+        <p>Привет, {{ login }}!</p>
+        <a href="/lab10/logout"><b>Выход</b></a><br>
+    {% else %}
+        <a href="/lab10/login"><b>Вход</b></a> <br>
+        <a href="/lab10/register"><b>Регистрация</b></a> <br>
+    {% endif %}
+    <a href="/lab10/katalog"><b>Перейти в каталог</b></a><br>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='lab10/main.css')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <title>Артем Тигранян. {%block lab%}{%endblock%}</title>
+
+    {% block script %} {% endblock %}
+</head>
+<body>
+    <header>
+        <a href="/lab10">🏠</a>{{ self.lab() }} 
+    </header>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; <b>Артем Тигранян, ФБИ-21, 3 курс, 2024</b>
+    </footer>
+</body>
+</html>

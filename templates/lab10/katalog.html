@@ -1,0 +1,57 @@
+{% extends "base2.html" %}
+
+{% block lab %}Каталог товаров{% endblock %}
+
+{% block script %}
+<script>
+    // Функция для добавления товара в корзину
+    function addToCart(productId) {
+        const url = '/lab10/json-rpc-api/';
+        const json = {
+            'jsonrpc': '2.0',
+            'method': 'add_to_cart',
+            'params': productId,
+            'id': Math.round(Math.random() * 1000)
+        };
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(json)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error.message);
+            } else {
+                alert(data.result);  // Сообщение о добавлении товара
+            }
+        });
+    }
+
+    // Функция для получения списка товаров
+    document.addEventListener('DOMContentLoaded', function() {
+        const productList = {{ products | tojson }};  // Передаем список продуктов из Python в JavaScript
+        const ul = document.getElementById('product-list');
+        ul.innerHTML = ''; // Очищаем список перед рендером
+
+        // Создаем список товаров
+        productList.forEach(product => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>${product.title}</strong><br>
+                ${product.description}<br>
+                Цена: ${product.price} руб.<br>
+                <button onclick="addToCart(${product.id})">Добавить в корзину</button>
+            `;
+            ul.appendChild(li);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<h1>Каталог товаров</h1>
+<ul id="product-list"></ul>
+<a href="/lab10/cart"><button>Перейти в корзину</button></a>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base2.html" %}
+
+{# номер лабораторной работы: #}
+{% block lab %} Мебель.Про {% endblock %}
+
+{# основной контент: #}
+{% block main %}
+    <style>
+        .forma{
+            border: 5px solid;
+            width: 200px;
+            text-align: center;
+            margin: auto;
+            padding: 20px;
+        }
+        h1{
+            text-align: center;
+        }
+    </style>
+    {% if error %}
+        <div> {{ error }} </div>
+    {% else %}
+        <h1>Регистрация</h1>
+        <div class="forma">
+            <form action="/lab5/register" method="post">
+                <div>
+                    <label>
+                        Логин: <input type="text" name="login">
+                    </label>
+                </div>
+    
+                <div>
+                    <label>
+                        Пароль: <input type="password" name="password">
+                    </label>
+                </div>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}  

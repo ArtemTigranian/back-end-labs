@@ -71,7 +71,7 @@ def congratulations():
     if age <= 12:
         if preference == 'дорогое' and style == 'красивое':
             gift = 'Футбольная форма Роналдо' if gender == 'мужчина' else 'Платье'
-            image = 'football_jersey.jpg' if gender == 'мужчина' else 'dress.jpg'
+            image = 'football_jersey.jpg' if gender == 'мужчина' else 'dress.png'
         elif preference == 'дорогое' and style == 'функциональное':
             gift = 'Машинка на пульте управления' if gender == 'мужчина' else 'Айфон'
             image = 'remote_car.jpg' if gender == 'мужчина' else 'iphone.jpg'
@@ -90,7 +90,7 @@ def congratulations():
             image = 'ps5.jpg' if gender == 'мужчина' else 'dyson_dryer.jpg'
         elif preference == 'милое' and style == 'красивое':
             gift = 'Новогодний свитер' if gender == 'мужчина' else 'Новогодний свитер'
-            image = 'mens_sweater.jpg' if gender == 'мужчина' else 'womens_sweater.jpg'
+            image = 'sweater.jpg'
         elif preference == 'милое' and style == 'функциональное':
             gift = 'Новогодняя книга'
             image = 'new_year_book.jpg'
