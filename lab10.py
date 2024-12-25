@@ -160,7 +160,7 @@ def update_cart():
 
     # Получаем id товара и новое количество
     product_id = request.form.get('product_id')
-    new_quantity = int(request.form.get('quantity'))  # Преобразуем quantity в целое число
+    new_quantity = int(request.form.get('quantity'))
 
     # Получаем корзину из сессии
     cart = session.get('cart', [])
@@ -176,7 +176,6 @@ def update_cart():
 
     # Перенаправляем обратно на страницу корзины
     return redirect('/lab10/cart')
-
 
 
 @lab10.route('/lab10/remove_from_cart', methods=['POST'])

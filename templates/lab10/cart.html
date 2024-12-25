@@ -6,8 +6,10 @@
 
 {% block main %}
 <h1>Ваша корзина</h1>
-
-{% if cart_items %}
+{% if login %}
+    ВОЙДИТЕ В АККАНУТ!
+{% else %}
+    {% if cart_items %}
     <ul>
     {% for item in cart_items %}
         <li>
@@ -29,14 +31,16 @@
         </li>
     {% endfor %}
     </ul>
-    
+
     <!-- Отображение общей суммы -->
     <h3>Общая сумма: <strong>{{ total_amount }} руб.</strong></h3>
 
     <form method="POST" action="/lab10/checkout">
         <button type="submit">Оформить покупку</button>
     </form>
-{% else %}
+    {% else %}
     <p>Ваша корзина пуста.</p>
+    {% endif %}
 {% endif %}
+
 {% endblock %}
